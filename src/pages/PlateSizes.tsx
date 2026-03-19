@@ -31,7 +31,7 @@ export default function PlateSizes() {
   const [form, setForm] = useState<Partial<PlateSize>>({ name: '', groups: emptyGroups(), active: true });
 
   const calculatedTotal = useMemo(() => {
-    return (form.groups || []).reduce((sum, g) => sum + (g.defaultWeight || 0), 0);
+    return (form.groups || []).filter(g => g.required).reduce((sum, g) => sum + (g.defaultWeight || 0), 0);
   }, [form.groups]);
 
   const handleOpen = (item?: PlateSize) => {
