@@ -11,7 +11,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Plus, Trash2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 
-const UNITS: PurchaseUnit[] = ['lb', 'kg', 'g', 'oz', 'un', 'L', 'ml'];
+const UNITS: { value: PurchaseUnit; label: string }[] = [
+  { value: 'lb', label: 'Libra (lb)' },
+  { value: 'kg', label: 'Quilograma (kg)' },
+  { value: 'g', label: 'Grama (g)' },
+  { value: 'oz', label: 'Onça (oz)' },
+  { value: 'un', label: 'Unidade (un)' },
+  { value: 'L', label: 'Litro (L)' },
+  { value: 'ml', label: 'Mililitro (ml)' },
+];
 const CATEGORIES = ['Carnes', 'Grãos', 'Legumes', 'Verduras', 'Temperos', 'Laticínios', 'Outros'];
 
 function emptyIngredient(): Partial<Ingredient> {
