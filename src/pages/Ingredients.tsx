@@ -150,8 +150,7 @@ export default function Ingredients() {
                   <tr className="border-b bg-muted/50">
                     <th className="text-left p-3">Nome</th>
                     <th className="text-left p-3">Categoria</th>
-                    <th className="text-right p-3">Preço/Unidade</th>
-                    <th className="text-right p-3">Custo/g</th>
+                    <th className="text-right p-3">Preço</th>
                     <th className="text-right p-3">Ações</th>
                   </tr>
                 </thead>
@@ -160,8 +159,7 @@ export default function Ingredients() {
                     <tr key={i.id} className="border-b last:border-0 hover:bg-muted/30">
                       <td className="p-3 font-medium">{i.name}</td>
                       <td className="p-3 text-muted-foreground">{i.category}</td>
-                      <td className="p-3 text-right">${i.price.toFixed(2)}/{i.quantity}{i.unit}</td>
-                      <td className="p-3 text-right font-mono text-xs">${getCostPerGram(i).toFixed(5)}/g</td>
+                      <td className="p-3 text-right">${(i.price / i.quantity).toFixed(2)}/{i.unit}</td>
                       <td className="p-3 text-right">
                         <div className="flex justify-end gap-1">
                           <Button variant="ghost" size="icon" onClick={() => handleOpen(i)}>
