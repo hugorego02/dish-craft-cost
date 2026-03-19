@@ -104,21 +104,21 @@ export default function Ingredients() {
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <Label>Preço ($)</Label>
-                  <Input type="number" step="0.01" value={form.price || ''} onChange={e => setForm({ ...form, price: parseFloat(e.target.value) || 0 })} />
-                </div>
-                <div>
-                  <Label>Quantidade</Label>
-                  <Input type="number" step="0.01" value={form.quantity || ''} onChange={e => setForm({ ...form, quantity: parseFloat(e.target.value) || 0 })} />
-                </div>
-                <div>
-                  <Label>Unidade</Label>
+                  <Label>Unidade de compra</Label>
                   <Select value={form.unit} onValueChange={v => setForm({ ...form, unit: v as PurchaseUnit })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {UNITS.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
+                      {UNITS.map(u => <SelectItem key={u.value} value={u.value}>{u.label}</SelectItem>)}
                     </SelectContent>
                   </Select>
+                </div>
+                <div>
+                  <Label>Quantidade ({form.unit || 'un'})</Label>
+                  <Input type="number" step="0.01" value={form.quantity || ''} onChange={e => setForm({ ...form, quantity: parseFloat(e.target.value) || 0 })} />
+                </div>
+                <div>
+                  <Label>Preço por {form.quantity || 1} {form.unit || 'un'}</Label>
+                  <Input type="number" step="0.01" value={form.price || ''} onChange={e => setForm({ ...form, price: parseFloat(e.target.value) || 0 })} placeholder="0.00" />
                 </div>
               </div>
               <div>
