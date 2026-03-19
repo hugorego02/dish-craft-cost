@@ -108,8 +108,8 @@ export default function PlateSizes() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground">Obrigatório</span>
-                        <Switch checked={g.required} onCheckedChange={v => updateGroup(i, { required: v })} />
+                        <span className="text-xs text-muted-foreground">Ativo</span>
+                        <Switch checked={g.required} onCheckedChange={v => updateGroup(i, { required: v, defaultWeight: v ? (g.defaultWeight || 0) : 0 })} />
                       </div>
                     </div>
                   ))}
