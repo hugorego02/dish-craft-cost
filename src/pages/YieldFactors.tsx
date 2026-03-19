@@ -14,26 +14,27 @@ export default function YieldFactors() {
   const { ingredients, yieldFactors, addYieldFactor, updateYieldFactor, deleteYieldFactor } = useApp();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<YieldFactor | null>(null);
-  const [form, setForm] = useState<Partial<YieldFactor>>({ ingredientId: '', rawWeight: 1000, cookedWeight: 750 });
+  const [form, setForm] = useState<Partial<YieldFactor>>({ ingredientId: '', factor: 0.75 });
 
-  const factor = (form.rawWeight && form.cookedWeight) ? form.cookedWeight / form.rawWeight : 1;
+  const factor = form.factor ?? 1;
 
   const handleOpen = (item?: YieldFactor) => {
     if (item) { setEditing(item); setForm(item); }
-    else { setEditing(null); setForm({ ingredientId: '', rawWeight: 1000, cookedWeight: 750 }); }
+    else { setEditing(null); setForm({ ingredientId: '', factor: 0.75 }); }
     setOpen(true);
   };
 
   const handleSave = () => {
-    if (!form.ingredientId || !form.rawWeight || !form.cookedWeight) {
+    if (!form.ingredientId || !form.factor || form.factor <= 0) {
       toast.error("Preencha todos os campos"); return;
     }
+    const f = Number(form.factor);
     const item: YieldFactor = {
       id: editing?.id || crypto.randomUUID(),
       ingredientId: form.ingredientId!,
-      rawWeight: Number(form.rawWeight),
-      cookedWeight: Number(form.cookedWeight),
-      factor,
+      rawWeight: 1000,
+      cookedWeight: Math.round(1000 * f),
+      factor: f,
       method: form.method,
       notes: form.notes,
     };
@@ -67,24 +68,22 @@ export default function YieldFactors() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Peso cru (g)</Label>
-                  <Input type="number" value={form.rawWeight || ''} onChange={e => setForm({ ...form, rawWeight: parseFloat(e.target.value) || 0 })} />
-                </div>
-                <div>
-                  <Label>Peso pronto (g)</Label>
-                  <Input type="number" value={form.cookedWeight || ''} onChange={e => setForm({ ...form, cookedWeight: parseFloat(e.target.value) || 0 })} />
-                </div>
+              <div>
+                <Label>Fator de Rendimento</Label>
+                <Input type="number" step="0.01" min="0.01" value={form.factor || ''} onChange={e => setForm({ ...form, factor: parseFloat(e.target.value) || 0 })} placeholder="Ex: 0.75" />
+                <p className="text-xs text-muted-foreground mt-1">Menor que 1 = perde peso · Maior que 1 = ganha peso</p>
               </div>
-              <div className="bg-muted rounded-lg p-4 flex items-center justify-center gap-4 text-sm">
-                <span>{form.rawWeight}g cru</span>
-                <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                <span>{form.cookedWeight}g pronto</span>
-                <span className="font-bold text-primary">Fator: {factor.toFixed(2)}</span>
-                <span className="text-muted-foreground">
-                  ({factor < 1 ? 'perde peso' : factor > 1 ? 'ganha peso' : 'mantém'})
-                </span>
+              <div className="bg-muted rounded-lg p-4 text-sm space-y-1">
+                <p className="font-medium text-foreground">Exemplo com 1000g cru:</p>
+                <div className="flex items-center gap-3">
+                  <span>1000g cru</span>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                  <span>{Math.round(1000 * factor)}g pronto</span>
+                  <span className="font-bold text-primary">Fator: {factor.toFixed(2)}</span>
+                  <span className="text-muted-foreground">
+                    ({factor < 1 ? 'perde peso' : factor > 1 ? 'ganha peso' : 'mantém'})
+                  </span>
+                </div>
               </div>
               <div>
                 <Label>Método de preparo</Label>
