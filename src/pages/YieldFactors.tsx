@@ -20,20 +20,21 @@ export default function YieldFactors() {
 
   const handleOpen = (item?: YieldFactor) => {
     if (item) { setEditing(item); setForm(item); }
-    else { setEditing(null); setForm({ ingredientId: '', rawWeight: 1000, cookedWeight: 750 }); }
+    else { setEditing(null); setForm({ ingredientId: '', factor: 0.75 }); }
     setOpen(true);
   };
 
   const handleSave = () => {
-    if (!form.ingredientId || !form.rawWeight || !form.cookedWeight) {
+    if (!form.ingredientId || !form.factor || form.factor <= 0) {
       toast.error("Preencha todos os campos"); return;
     }
+    const f = Number(form.factor);
     const item: YieldFactor = {
       id: editing?.id || crypto.randomUUID(),
       ingredientId: form.ingredientId!,
-      rawWeight: Number(form.rawWeight),
-      cookedWeight: Number(form.cookedWeight),
-      factor,
+      rawWeight: 1000,
+      cookedWeight: Math.round(1000 * f),
+      factor: f,
       method: form.method,
       notes: form.notes,
     };
