@@ -14,9 +14,9 @@ export default function YieldFactors() {
   const { ingredients, yieldFactors, addYieldFactor, updateYieldFactor, deleteYieldFactor } = useApp();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<YieldFactor | null>(null);
-  const [form, setForm] = useState<Partial<YieldFactor>>({ ingredientId: '', rawWeight: 1000, cookedWeight: 750 });
+  const [form, setForm] = useState<Partial<YieldFactor>>({ ingredientId: '', factor: 0.75 });
 
-  const factor = (form.rawWeight && form.cookedWeight) ? form.cookedWeight / form.rawWeight : 1;
+  const factor = form.factor ?? 1;
 
   const handleOpen = (item?: YieldFactor) => {
     if (item) { setEditing(item); setForm(item); }
