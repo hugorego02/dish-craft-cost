@@ -150,10 +150,8 @@ export default function Ingredients() {
                   <tr className="border-b bg-muted/50">
                     <th className="text-left p-3">Nome</th>
                     <th className="text-left p-3">Categoria</th>
-                    <th className="text-right p-3">Preço</th>
-                    <th className="text-right p-3">Qtd</th>
-                    <th className="text-center p-3">Un.</th>
-                    <th className="text-right p-3">$/g</th>
+                    <th className="text-right p-3">Preço/Unidade</th>
+                    <th className="text-right p-3">Custo/g</th>
                     <th className="text-right p-3">Ações</th>
                   </tr>
                 </thead>
