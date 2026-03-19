@@ -31,7 +31,7 @@ export default function PlateSizes() {
   const [form, setForm] = useState<Partial<PlateSize>>({ name: '', groups: emptyGroups(), active: true });
 
   const calculatedTotal = useMemo(() => {
-    return (form.groups || []).reduce((sum, g) => sum + (g.defaultWeight || 0), 0);
+    return (form.groups || []).filter(g => g.required).reduce((sum, g) => sum + (g.defaultWeight || 0), 0);
   }, [form.groups]);
 
   const handleOpen = (item?: PlateSize) => {
@@ -108,8 +108,8 @@ export default function PlateSizes() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground">Obrigatório</span>
-                        <Switch checked={g.required} onCheckedChange={v => updateGroup(i, { required: v })} />
+                        <span className="text-xs text-muted-foreground">Ativo</span>
+                        <Switch checked={g.required} onCheckedChange={v => updateGroup(i, { required: v, defaultWeight: v ? (g.defaultWeight || 0) : 0 })} />
                       </div>
                     </div>
                   ))}
