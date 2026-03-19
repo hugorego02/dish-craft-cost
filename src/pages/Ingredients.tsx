@@ -162,10 +162,8 @@ export default function Ingredients() {
                     <tr key={i.id} className="border-b last:border-0 hover:bg-muted/30">
                       <td className="p-3 font-medium">{i.name}</td>
                       <td className="p-3 text-muted-foreground">{i.category}</td>
-                      <td className="p-3 text-right">${i.price.toFixed(2)}</td>
-                      <td className="p-3 text-right">{i.quantity}</td>
-                      <td className="p-3 text-center">{i.unit}</td>
-                      <td className="p-3 text-right font-mono text-xs">{getCostPerGram(i).toFixed(5)}</td>
+                      <td className="p-3 text-right">${i.price.toFixed(2)}/{i.quantity}{i.unit}</td>
+                      <td className="p-3 text-right font-mono text-xs">${getCostPerGram(i).toFixed(5)}/g</td>
                       <td className="p-3 text-right">
                         <div className="flex justify-end gap-1">
                           <Button variant="ghost" size="icon" onClick={() => handleOpen(i)}>
