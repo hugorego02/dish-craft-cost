@@ -204,9 +204,9 @@ export default function Plates() {
               </div>
 
               <div>
-                <Label>Custos extras</Label>
-                <div className="flex flex-wrap gap-2 mt-1">
-                  {extraCosts.filter(ec => ec.applyPer === 'plate').map(ec => (
+                <Label>Custos extras (selecione os que se aplicam a este prato)</Label>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {extraCosts.map(ec => (
                     <Button
                       key={ec.id}
                       variant={(form.extraCostIds || []).includes(ec.id) ? 'default' : 'outline'}
@@ -216,11 +216,12 @@ export default function Plates() {
                         setForm({ ...form, extraCostIds: ids.includes(ec.id) ? ids.filter(x => x !== ec.id) : [...ids, ec.id] });
                       }}
                     >
-                      {ec.name} (${ec.value.toFixed(2)})
+                      {ec.name} — R${ec.value.toFixed(2)}
+                      <span className="ml-1 text-xs opacity-70">({ec.category})</span>
                     </Button>
                   ))}
-                  {extraCosts.filter(ec => ec.applyPer === 'plate').length === 0 && (
-                    <p className="text-xs text-muted-foreground">Nenhum custo extra cadastrado</p>
+                  {extraCosts.length === 0 && (
+                    <p className="text-xs text-muted-foreground">Nenhum custo extra cadastrado. Cadastre em "Custos Extras" primeiro.</p>
                   )}
                 </div>
               </div>
