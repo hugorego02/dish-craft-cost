@@ -75,7 +75,7 @@ export default function Plates() {
     }
     for (const ecId of (form.extraCostIds || [])) {
       const ec = extraCosts.find(e => e.id === ecId);
-      if (ec && ec.applyPer === 'plate') total += ec.value;
+      if (ec) total += ec.value;
     }
     return total;
   }, [form.components, form.extraCostIds, components, ingredients, yieldFactors, extraCosts]);
