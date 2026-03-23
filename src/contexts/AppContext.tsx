@@ -69,7 +69,6 @@ function mapComponent(row: any): FoodComponent {
     name: row.name,
     ingredientId: row.ingredient_id,
     yieldFactorId: row.yield_factor_id || undefined,
-    servedWeight: Number(row.served_weight),
     group: row.food_group as FoodGroup,
     notes: row.notes || undefined,
   };
