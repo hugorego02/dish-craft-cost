@@ -159,7 +159,7 @@ export function getPlateCost(
   }
   for (const ecId of plate.extraCostIds) {
     const ec = extraCosts.find(e => e.id === ecId);
-    if (ec && ec.applyPer === 'plate') total += ec.value;
+    if (ec) total += ec.value;
   }
   return total;
 }
