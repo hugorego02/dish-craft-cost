@@ -14,7 +14,232 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      components: {
+        Row: {
+          food_group: string
+          id: string
+          ingredient_id: string
+          name: string
+          notes: string | null
+          served_weight: number
+          yield_factor_id: string | null
+        }
+        Insert: {
+          food_group?: string
+          id?: string
+          ingredient_id: string
+          name: string
+          notes?: string | null
+          served_weight?: number
+          yield_factor_id?: string | null
+        }
+        Update: {
+          food_group?: string
+          id?: string
+          ingredient_id?: string
+          name?: string
+          notes?: string | null
+          served_weight?: number
+          yield_factor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "components_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "components_yield_factor_id_fkey"
+            columns: ["yield_factor_id"]
+            isOneToOne: false
+            referencedRelation: "yield_factors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      extra_costs: {
+        Row: {
+          apply_per: string
+          category: string
+          id: string
+          name: string
+          notes: string | null
+          value: number
+        }
+        Insert: {
+          apply_per?: string
+          category?: string
+          id?: string
+          name: string
+          notes?: string | null
+          value?: number
+        }
+        Update: {
+          apply_per?: string
+          category?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          value?: number
+        }
+        Relationships: []
+      }
+      ingredients: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          price: number
+          quantity: number
+          supplier: string | null
+          unit: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          price?: number
+          quantity?: number
+          supplier?: string | null
+          unit?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          price?: number
+          quantity?: number
+          supplier?: string | null
+          unit?: string
+        }
+        Relationships: []
+      }
+      plate_sizes: {
+        Row: {
+          active: boolean
+          description: string | null
+          groups: Json
+          id: string
+          name: string
+          notes: string | null
+          total_weight: number
+        }
+        Insert: {
+          active?: boolean
+          description?: string | null
+          groups?: Json
+          id?: string
+          name: string
+          notes?: string | null
+          total_weight?: number
+        }
+        Update: {
+          active?: boolean
+          description?: string | null
+          groups?: Json
+          id?: string
+          name?: string
+          notes?: string | null
+          total_weight?: number
+        }
+        Relationships: []
+      }
+      plates: {
+        Row: {
+          active: boolean
+          components: Json
+          extra_cost_ids: Json
+          id: string
+          manual_price: number | null
+          markup_or_margin: number | null
+          name: string
+          notes: string | null
+          plate_size_id: string
+          pricing_method: string
+          type: string
+        }
+        Insert: {
+          active?: boolean
+          components?: Json
+          extra_cost_ids?: Json
+          id?: string
+          manual_price?: number | null
+          markup_or_margin?: number | null
+          name: string
+          notes?: string | null
+          plate_size_id: string
+          pricing_method?: string
+          type?: string
+        }
+        Update: {
+          active?: boolean
+          components?: Json
+          extra_cost_ids?: Json
+          id?: string
+          manual_price?: number | null
+          markup_or_margin?: number | null
+          name?: string
+          notes?: string | null
+          plate_size_id?: string
+          pricing_method?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plates_plate_size_id_fkey"
+            columns: ["plate_size_id"]
+            isOneToOne: false
+            referencedRelation: "plate_sizes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      yield_factors: {
+        Row: {
+          cooked_weight: number
+          factor: number
+          id: string
+          ingredient_id: string
+          method: string | null
+          notes: string | null
+          raw_weight: number
+        }
+        Insert: {
+          cooked_weight?: number
+          factor?: number
+          id?: string
+          ingredient_id: string
+          method?: string | null
+          notes?: string | null
+          raw_weight?: number
+        }
+        Update: {
+          cooked_weight?: number
+          factor?: number
+          id?: string
+          ingredient_id?: string
+          method?: string | null
+          notes?: string | null
+          raw_weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "yield_factors_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
