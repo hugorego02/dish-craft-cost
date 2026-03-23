@@ -118,17 +118,6 @@ export function getYieldFactor(yf: YieldFactor | undefined): number {
   return yf ? yf.factor : 1;
 }
 
-export function getComponentCost(
-  component: FoodComponent,
-  ingredient: Ingredient,
-  yieldFactor: YieldFactor | undefined
-): number {
-  const factor = getYieldFactor(yieldFactor);
-  const rawWeight = component.servedWeight / factor;
-  const costPerGram = getCostPerGram(ingredient);
-  return rawWeight * costPerGram;
-}
-
 export function getComponentCostForWeight(
   weight: number,
   ingredient: Ingredient,
