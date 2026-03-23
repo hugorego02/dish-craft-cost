@@ -21,7 +21,6 @@ export type Database = {
           ingredient_id: string
           name: string
           notes: string | null
-          served_weight: number
           yield_factor_id: string | null
         }
         Insert: {
@@ -30,7 +29,6 @@ export type Database = {
           ingredient_id: string
           name: string
           notes?: string | null
-          served_weight?: number
           yield_factor_id?: string | null
         }
         Update: {
@@ -39,7 +37,6 @@ export type Database = {
           ingredient_id?: string
           name?: string
           notes?: string | null
-          served_weight?: number
           yield_factor_id?: string | null
         }
         Relationships: [
