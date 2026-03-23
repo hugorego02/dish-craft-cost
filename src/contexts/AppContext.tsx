@@ -207,7 +207,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const addComponent = useCallback(async (c: FoodComponent) => {
     const { error } = await supabase.from('components').insert({
       id: c.id, name: c.name, ingredient_id: c.ingredientId,
-      yield_factor_id: c.yieldFactorId || null, served_weight: c.servedWeight,
+      yield_factor_id: c.yieldFactorId || null,
       food_group: c.group, notes: c.notes || null,
     });
     if (error) { toast.error('Erro ao salvar componente'); console.error(error); return; }
