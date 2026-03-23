@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useApp } from "@/contexts/AppContext";
 import type { FoodComponent, FoodGroup } from "@/types";
-import { FOOD_GROUP_LABELS, getComponentCost, getCostPerGram } from "@/types";
+import { FOOD_GROUP_LABELS, getCostPerGram } from "@/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,23 +17,22 @@ export default function Components() {
   const { ingredients, yieldFactors, components, addComponent, updateComponent, deleteComponent } = useApp();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<FoodComponent | null>(null);
-  const [form, setForm] = useState<Partial<FoodComponent>>({ name: '', ingredientId: '', servedWeight: 150, group: 'protein' });
+  const [form, setForm] = useState<Partial<FoodComponent>>({ name: '', ingredientId: '', group: 'protein' });
 
   const handleOpen = (item?: FoodComponent) => {
     if (item) { setEditing(item); setForm(item); }
-    else { setEditing(null); setForm({ name: '', ingredientId: '', servedWeight: 150, group: 'protein' }); }
+    else { setEditing(null); setForm({ name: '', ingredientId: '', group: 'protein' }); }
     setOpen(true);
   };
 
   const handleSave = () => {
-    if (!form.name || !form.ingredientId || !form.servedWeight) {
+    if (!form.name || !form.ingredientId) {
       toast.error("Preencha todos os campos obrigatórios"); return;
     }
     const item: FoodComponent = {
       id: editing?.id || crypto.randomUUID(),
       name: form.name!,
       ingredientId: form.ingredientId!,
-      servedWeight: Number(form.servedWeight),
       group: form.group as FoodGroup,
       notes: form.notes,
     };
@@ -42,23 +41,21 @@ export default function Components() {
     setOpen(false);
   };
 
-  const calcInfo = (comp: FoodComponent) => {
+  const getIngInfo = (comp: FoodComponent) => {
     const ing = ingredients.find(i => i.id === comp.ingredientId);
     if (!ing) return null;
     const yf = yieldFactors.find(y => y.ingredientId === comp.ingredientId);
     const factor = yf?.factor ?? 1;
-    const rawWeight = comp.servedWeight / factor;
     const costPerGram = getCostPerGram(ing);
-    const cost = rawWeight * costPerGram;
-    return { ing, factor, rawWeight, costPerGram, cost };
+    return { ing, factor, costPerGram };
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold font-display">Componentes / Porções</h1>
-          <p className="text-muted-foreground mt-1">Crie as porções que compõem seus pratos</p>
+          <h1 className="text-3xl font-bold font-display">Componentes</h1>
+          <p className="text-muted-foreground mt-1">Cadastre os componentes que serão usados nos pratos. O peso é definido no tamanho do prato.</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
@@ -82,42 +79,32 @@ export default function Components() {
                   </Select>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Insumo base</Label>
-                  <Select value={form.ingredientId} onValueChange={v => setForm({ ...form, ingredientId: v })}>
-                    <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
-                    <SelectContent>
-                      {ingredients.map(i => <SelectItem key={i.id} value={i.id}>{i.name}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>Porção servida (g)</Label>
-                  <Input type="number" value={form.servedWeight || ''} onChange={e => setForm({ ...form, servedWeight: parseFloat(e.target.value) || 0 })} />
-                </div>
+              <div>
+                <Label>Insumo base</Label>
+                <Select value={form.ingredientId} onValueChange={v => setForm({ ...form, ingredientId: v })}>
+                  <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                  <SelectContent>
+                    {ingredients.map(i => <SelectItem key={i.id} value={i.id}>{i.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
               </div>
-              {form.ingredientId && form.servedWeight ? (() => {
+              {form.ingredientId && (() => {
                 const ing = ingredients.find(i => i.id === form.ingredientId);
                 if (!ing) return null;
                 const yf = yieldFactors.find(y => y.ingredientId === form.ingredientId);
                 const factor = yf?.factor ?? 1;
-                const rawW = (form.servedWeight || 0) / factor;
                 const cpg = getCostPerGram(ing);
-                const cost = rawW * cpg;
                 return (
                   <div className="bg-accent/50 rounded-lg p-4 space-y-1 text-sm">
                     <div className="flex items-center gap-2 mb-2 font-semibold text-accent-foreground">
-                      <Info className="h-4 w-4" />Cálculo transparente
+                      <Info className="h-4 w-4" />Informações do insumo
                     </div>
-                    <p>Porção pronta: <b>{form.servedWeight}g</b></p>
+                    <p>Custo por grama: <b>R${cpg.toFixed(5)}</b></p>
                     <p>Fator de rendimento: <b>{factor.toFixed(2)}</b> {!yf && <span className="text-warning">(sem fator cadastrado, usando 1.0)</span>}</p>
-                    <p>Peso cru necessário: <b>{rawW.toFixed(1)}g</b> ({form.servedWeight} ÷ {factor.toFixed(2)})</p>
-                    <p>Custo por grama: <b>${cpg.toFixed(5)}</b></p>
-                    <p className="text-base font-bold text-primary">Custo da porção: ${cost.toFixed(2)}</p>
+                    <p className="text-xs text-muted-foreground">O peso servido será definido no tamanho do prato.</p>
                   </div>
                 );
-              })() : null}
+              })()}
               <Button onClick={handleSave} className="w-full">Salvar</Button>
             </div>
           </DialogContent>
@@ -126,7 +113,7 @@ export default function Components() {
 
       {components.length === 0 ? (
         <Card><CardContent className="py-12 text-center text-muted-foreground">
-          Nenhum componente criado. Cadastre porções com base nos seus insumos.
+          Nenhum componente criado. Cadastre componentes com base nos seus insumos.
         </CardContent></Card>
       ) : (
         <Card><CardContent className="p-0">
@@ -136,22 +123,20 @@ export default function Components() {
                 <th className="text-left p-3">Nome</th>
                 <th className="text-left p-3">Grupo</th>
                 <th className="text-left p-3">Insumo</th>
-                <th className="text-right p-3">Porção</th>
-                <th className="text-right p-3">Peso cru</th>
-                <th className="text-right p-3">Custo</th>
+                <th className="text-right p-3">Custo/g</th>
+                <th className="text-right p-3">Rendimento</th>
                 <th className="text-right p-3">Ações</th>
               </tr></thead>
               <tbody>
                 {components.map(c => {
-                  const info = calcInfo(c);
+                  const info = getIngInfo(c);
                   return (
                     <tr key={c.id} className="border-b last:border-0 hover:bg-muted/30">
                       <td className="p-3 font-medium">{c.name}</td>
                       <td className="p-3"><span className="inline-block px-2 py-0.5 rounded-full bg-accent text-accent-foreground text-xs">{FOOD_GROUP_LABELS[c.group]}</span></td>
                       <td className="p-3 text-muted-foreground">{info?.ing.name || '—'}</td>
-                      <td className="p-3 text-right">{c.servedWeight}g</td>
-                      <td className="p-3 text-right font-mono text-xs">{info ? `${info.rawWeight.toFixed(1)}g` : '—'}</td>
-                      <td className="p-3 text-right font-bold">{info ? `$${info.cost.toFixed(2)}` : '—'}</td>
+                      <td className="p-3 text-right font-mono text-xs">{info ? `R$${info.costPerGram.toFixed(5)}` : '—'}</td>
+                      <td className="p-3 text-right font-mono text-xs">{info ? `${info.factor.toFixed(2)}` : '—'}</td>
                       <td className="p-3 text-right">
                         <div className="flex justify-end gap-1">
                           <Button variant="ghost" size="icon" onClick={() => handleOpen(c)}><Pencil className="h-4 w-4" /></Button>
