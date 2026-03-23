@@ -37,7 +37,6 @@ export interface FoodComponent {
   name: string;
   ingredientId: string;
   yieldFactorId?: string;
-  servedWeight: number; // grams, cooked
   group: FoodGroup;
   notes?: string;
 }
@@ -117,17 +116,6 @@ export function getCostPerGram(ingredient: Ingredient): number {
 
 export function getYieldFactor(yf: YieldFactor | undefined): number {
   return yf ? yf.factor : 1;
-}
-
-export function getComponentCost(
-  component: FoodComponent,
-  ingredient: Ingredient,
-  yieldFactor: YieldFactor | undefined
-): number {
-  const factor = getYieldFactor(yieldFactor);
-  const rawWeight = component.servedWeight / factor;
-  const costPerGram = getCostPerGram(ingredient);
-  return rawWeight * costPerGram;
 }
 
 export function getComponentCostForWeight(

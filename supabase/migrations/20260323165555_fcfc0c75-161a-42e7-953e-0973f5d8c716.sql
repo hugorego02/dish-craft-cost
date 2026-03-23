@@ -1,0 +1,1 @@
+ALTER TABLE public.components DROP COLUMN served_weight;

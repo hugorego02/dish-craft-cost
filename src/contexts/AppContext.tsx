@@ -69,7 +69,6 @@ function mapComponent(row: any): FoodComponent {
     name: row.name,
     ingredientId: row.ingredient_id,
     yieldFactorId: row.yield_factor_id || undefined,
-    servedWeight: Number(row.served_weight),
     group: row.food_group as FoodGroup,
     notes: row.notes || undefined,
   };
@@ -208,7 +207,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const addComponent = useCallback(async (c: FoodComponent) => {
     const { error } = await supabase.from('components').insert({
       id: c.id, name: c.name, ingredient_id: c.ingredientId,
-      yield_factor_id: c.yieldFactorId || null, served_weight: c.servedWeight,
+      yield_factor_id: c.yieldFactorId || null,
       food_group: c.group, notes: c.notes || null,
     });
     if (error) { toast.error('Erro ao salvar componente'); console.error(error); return; }
@@ -218,7 +217,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const updateComponent = useCallback(async (c: FoodComponent) => {
     const { error } = await supabase.from('components').update({
       name: c.name, ingredient_id: c.ingredientId,
-      yield_factor_id: c.yieldFactorId || null, served_weight: c.servedWeight,
+      yield_factor_id: c.yieldFactorId || null,
       food_group: c.group, notes: c.notes || null,
     }).eq('id', c.id);
     if (error) { toast.error('Erro ao atualizar componente'); console.error(error); return; }
