@@ -37,7 +37,6 @@ export interface FoodComponent {
   name: string;
   ingredientId: string;
   yieldFactorId?: string;
-  servedWeight: number; // grams, cooked
   group: FoodGroup;
   notes?: string;
 }
