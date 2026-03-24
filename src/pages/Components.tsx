@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useApp } from "@/contexts/AppContext";
 import type { FoodComponent, FoodGroup } from "@/types";
-import { FOOD_GROUP_LABELS, getCostPerGram, getComponentCostForWeight } from "@/types";
+import { FOOD_GROUP_LABELS } from "@/types";
+import { ingredientCostPerGram, componentCostForWeight, cookedToRawWeight, getYieldFactorValue } from "@/lib/calculations";
+import { resolveComponentDeps } from "@/lib/calculations/selectors";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +20,8 @@ const COST_UNIT_LABELS: Record<CostUnit, string> = { g: 'g', kg: 'kg', lb: 'lb' 
 const COST_UNIT_MULTIPLIER: Record<CostUnit, number> = { g: 1, kg: 1000, lb: 453.592 };
 
 export default function Components() {
-  const { ingredients, yieldFactors, components, addComponent, updateComponent, deleteComponent } = useApp();
+  const ctx = useApp();
+  const { ingredients, components, addComponent, updateComponent, deleteComponent } = ctx;
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<FoodComponent | null>(null);
   const [form, setForm] = useState<Partial<FoodComponent>>({ name: '', ingredientId: '', group: 'protein' });
@@ -49,12 +52,11 @@ export default function Components() {
   };
 
   const getIngInfo = (comp: FoodComponent) => {
-    const ing = ingredients.find(i => i.id === comp.ingredientId);
-    if (!ing) return null;
-    const yf = yieldFactors.find(y => y.ingredientId === comp.ingredientId);
-    const factor = yf?.factor ?? 1;
-    const costPerGram = getCostPerGram(ing);
-    return { ing, yf, factor, costPerGram };
+    const { ingredient, yieldFactor } = resolveComponentDeps(ctx, comp);
+    if (!ingredient) return null;
+    const factor = getYieldFactorValue(yieldFactor);
+    const costPerGram = ingredientCostPerGram(ingredient);
+    return { ing: ingredient, yf: yieldFactor, factor, costPerGram };
   };
 
   const formatCost = (costPerGram: number) => {
@@ -103,18 +105,18 @@ export default function Components() {
               {form.ingredientId && (() => {
                 const ing = ingredients.find(i => i.id === form.ingredientId);
                 if (!ing) return null;
-                const yf = yieldFactors.find(y => y.ingredientId === form.ingredientId);
-                const factor = yf?.factor ?? 1;
-                const cpg = getCostPerGram(ing);
+                const { yieldFactor } = resolveComponentDeps(ctx, { ingredientId: form.ingredientId } as FoodComponent);
+                const factor = getYieldFactorValue(yieldFactor);
+                const cpg = ingredientCostPerGram(ing);
                 const simGrams = parseFloat(simWeight);
-                const simCost = simGrams > 0 ? getComponentCostForWeight(simGrams, ing, yf) : null;
+                const simCost = simGrams > 0 ? componentCostForWeight(simGrams, ing, yieldFactor) : null;
                 return (
                   <div className="bg-accent/50 rounded-lg p-4 space-y-3 text-sm">
                     <div className="flex items-center gap-2 font-semibold text-accent-foreground">
                       <Info className="h-4 w-4" />Informações do insumo
                     </div>
                     <p>Custo por kg: <b>R${(cpg * 1000).toFixed(2)}</b></p>
-                    <p>Fator de rendimento: <b>{factor.toFixed(2)}</b> {!yf && <span className="text-warning">(sem fator cadastrado, usando 1.0)</span>}</p>
+                    <p>Fator de rendimento: <b>{factor.toFixed(2)}</b> {!yieldFactor && <span className="text-warning">(sem fator cadastrado, usando 1.0)</span>}</p>
                     
                     <div className="border-t border-border pt-3">
                       <Label className="text-xs text-muted-foreground">Simular custo para peso (g pronto)</Label>
@@ -134,7 +136,7 @@ export default function Components() {
                       </div>
                       {simCost !== null && simGrams > 0 && (
                         <p className="text-xs text-muted-foreground mt-1">
-                          Peso cru necessário: {(simGrams / factor).toFixed(1)}g → custo R${simCost.toFixed(2)}
+                          Peso cru necessário: {cookedToRawWeight(simGrams, yieldFactor).toFixed(1)}g → custo R${simCost.toFixed(2)}
                         </p>
                       )}
                     </div>

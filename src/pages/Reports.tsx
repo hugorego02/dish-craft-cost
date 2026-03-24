@@ -1,30 +1,31 @@
 import { useApp } from "@/contexts/AppContext";
-import { getPlateCost, getPlatePrice, FOOD_GROUP_LABELS, getComponentCostForWeight } from "@/types";
+import { FOOD_GROUP_LABELS } from "@/types";
+import { plateFinancials, componentCostForWeight, cookedToRawWeight, getYieldFactorValue } from "@/lib/calculations";
+import { resolveComponentDeps } from "@/lib/calculations/selectors";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Reports() {
-  const { ingredients, yieldFactors, components, plateSizes, plates, extraCosts } = useApp();
+  const ctx = useApp();
+  const { components, plateSizes, plates, extraCosts } = ctx;
 
   const plateDetails = plates.filter(p => p.active).map(p => {
-    const cost = getPlateCost(p, components, ingredients, yieldFactors, extraCosts);
-    const price = getPlatePrice(p, cost);
+    const fin = plateFinancials(p, ctx.components, ctx.ingredients, ctx.yieldFactors, ctx.extraCosts);
     const size = plateSizes.find(ps => ps.id === p.plateSizeId);
 
     const compDetails = p.components.map(pc => {
       const comp = components.find(c => c.id === pc.componentId);
       if (!comp) return null;
-      const ing = ingredients.find(i => i.id === comp.ingredientId);
-      if (!ing) return null;
-      const yf = yieldFactors.find(y => y.ingredientId === comp.ingredientId);
-      const factor = yf?.factor ?? 1;
-      const rawWeight = pc.weight / factor;
-      const compCost = getComponentCostForWeight(pc.weight, ing, yf);
-      return { comp, ing, factor, rawWeight, weight: pc.weight, cost: compCost };
+      const { ingredient, yieldFactor } = resolveComponentDeps(ctx, comp);
+      if (!ingredient) return null;
+      const factor = getYieldFactorValue(yieldFactor);
+      const rawWeight = cookedToRawWeight(pc.weight, yieldFactor);
+      const compCost = componentCostForWeight(pc.weight, ingredient, yieldFactor);
+      return { comp, ing: ingredient, factor, rawWeight, weight: pc.weight, cost: compCost };
     }).filter(Boolean);
 
     const ecDetails = p.extraCostIds.map(id => extraCosts.find(e => e.id === id)).filter(Boolean);
 
-    return { plate: p, size, cost, price, profit: price - cost, margin: price > 0 ? ((price - cost) / price) * 100 : 0, compDetails, ecDetails };
+    return { plate: p, size, ...fin, compDetails, ecDetails };
   });
 
   return (
@@ -79,7 +80,7 @@ export default function Reports() {
                 </table>
               </div>
               <div className="bg-accent/50 rounded-lg p-4 grid grid-cols-4 gap-4 text-center">
-                <div><p className="text-xs text-muted-foreground">Custo</p><p className="text-lg font-bold">${pd.cost.toFixed(2)}</p></div>
+                <div><p className="text-xs text-muted-foreground">Custo</p><p className="text-lg font-bold">${pd.totalCost.toFixed(2)}</p></div>
                 <div><p className="text-xs text-muted-foreground">Preço</p><p className="text-lg font-bold">${pd.price.toFixed(2)}</p></div>
                 <div><p className="text-xs text-muted-foreground">Lucro</p><p className="text-lg font-bold text-success">${pd.profit.toFixed(2)}</p></div>
                 <div><p className="text-xs text-muted-foreground">Margem</p><p className="text-lg font-bold">{pd.margin.toFixed(1)}%</p></div>
