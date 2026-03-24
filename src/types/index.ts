@@ -108,27 +108,32 @@ export interface AppData {
   extraCosts: ExtraCost[];
 }
 
-// Calculation helpers
+// ---- Legacy calculation helpers (delegam para src/lib/calculations) ----
+// Mantidos para compatibilidade; prefira importar de @/lib/calculations.
+import { ingredientCostPerGram } from '@/lib/calculations/ingredient';
+import { componentCostForWeight } from '@/lib/calculations/component';
+import { plateTotalCost, platePrice as _platePrice } from '@/lib/calculations/plate';
+
+/** @deprecated Use ingredientCostPerGram de @/lib/calculations */
 export function getCostPerGram(ingredient: Ingredient): number {
-  const totalGrams = ingredient.quantity * UNIT_TO_GRAMS[ingredient.unit];
-  return ingredient.price / totalGrams;
+  return ingredientCostPerGram(ingredient);
 }
 
+/** @deprecated Use getYieldFactorValue de @/lib/calculations */
 export function getYieldFactor(yf: YieldFactor | undefined): number {
   return yf ? yf.factor : 1;
 }
 
+/** @deprecated Use componentCostForWeight de @/lib/calculations */
 export function getComponentCostForWeight(
   weight: number,
   ingredient: Ingredient,
   yieldFactor: YieldFactor | undefined
 ): number {
-  const factor = getYieldFactor(yieldFactor);
-  const rawWeight = weight / factor;
-  const costPerGram = getCostPerGram(ingredient);
-  return rawWeight * costPerGram;
+  return componentCostForWeight(weight, ingredient, yieldFactor);
 }
 
+/** @deprecated Use plateTotalCost de @/lib/calculations */
 export function getPlateCost(
   plate: Plate,
   components: FoodComponent[],
@@ -136,25 +141,10 @@ export function getPlateCost(
   yieldFactors: YieldFactor[],
   extraCosts: ExtraCost[]
 ): number {
-  let total = 0;
-  for (const pc of plate.components) {
-    const comp = components.find(c => c.id === pc.componentId);
-    if (!comp) continue;
-    const ing = ingredients.find(i => i.id === comp.ingredientId);
-    if (!ing) continue;
-    const yf = yieldFactors.find(y => y.ingredientId === comp.ingredientId);
-    total += getComponentCostForWeight(pc.weight, ing, yf);
-  }
-  for (const ecId of plate.extraCostIds) {
-    const ec = extraCosts.find(e => e.id === ecId);
-    if (ec) total += ec.value;
-  }
-  return total;
+  return plateTotalCost(plate, components, ingredients, yieldFactors, extraCosts).totalCost;
 }
 
+/** @deprecated Use platePrice de @/lib/calculations */
 export function getPlatePrice(plate: Plate, cost: number): number {
-  if (plate.pricingMethod === 'manual' && plate.manualPrice != null) return plate.manualPrice;
-  if (plate.pricingMethod === 'markup' && plate.markupOrMargin != null) return cost * plate.markupOrMargin;
-  if (plate.pricingMethod === 'margin' && plate.markupOrMargin != null) return cost / (1 - plate.markupOrMargin / 100);
-  return 0;
+  return _platePrice(plate, cost);
 }
