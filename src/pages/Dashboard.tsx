@@ -1,5 +1,5 @@
 import { useApp } from "@/contexts/AppContext";
-import { getPlateCost, getPlatePrice } from "@/types";
+import { plateFinancials } from "@/lib/calculations";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShoppingCart, UtensilsCrossed, ChefHat, DollarSign } from "lucide-react";
 
@@ -7,9 +7,8 @@ export default function Dashboard() {
   const { ingredients, yieldFactors, components, plateSizes, plates, extraCosts } = useApp();
 
   const plateCosts = plates.filter(p => p.active).map(p => {
-    const cost = getPlateCost(p, components, ingredients, yieldFactors, extraCosts);
-    const price = getPlatePrice(p, cost);
-    return { plate: p, cost, price, profit: price - cost, margin: price > 0 ? ((price - cost) / price) * 100 : 0 };
+    const fin = plateFinancials(p, components, ingredients, yieldFactors, extraCosts);
+    return { plate: p, ...fin };
   });
 
   const avgMargin = plateCosts.length > 0
@@ -65,7 +64,7 @@ export default function Dashboard() {
                   {plateCosts.map(pc => (
                     <tr key={pc.plate.id} className="border-b last:border-0">
                       <td className="py-2 pr-4 font-medium">{pc.plate.name}</td>
-                      <td className="text-right py-2 px-4">${pc.cost.toFixed(2)}</td>
+                      <td className="text-right py-2 px-4">${pc.totalCost.toFixed(2)}</td>
                       <td className="text-right py-2 px-4">${pc.price.toFixed(2)}</td>
                       <td className="text-right py-2 px-4 text-success">${pc.profit.toFixed(2)}</td>
                       <td className="text-right py-2 pl-4">{pc.margin.toFixed(1)}%</td>

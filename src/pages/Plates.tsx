@@ -1,7 +1,9 @@
 import { useState, useMemo } from "react";
 import { useApp } from "@/contexts/AppContext";
 import type { Plate, PlateComponent } from "@/types";
-import { FOOD_GROUP_LABELS, getPlateCost, getPlatePrice, getComponentCostForWeight } from "@/types";
+import { FOOD_GROUP_LABELS } from "@/types";
+import { componentCostForWeight, plateFinancials, platePrice as calcPlatePrice, priceByMarkup, priceByMargin, realMargin, unitProfit } from "@/lib/calculations";
+import { resolveComponentDeps } from "@/lib/calculations/selectors";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +15,8 @@ import { Plus, Trash2, Pencil, Info } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Plates() {
-  const { ingredients, yieldFactors, components, plateSizes, plates, extraCosts, addPlate, updatePlate, deletePlate } = useApp();
+  const ctx = useApp();
+  const { components, plateSizes, plates, extraCosts, addPlate, updatePlate, deletePlate } = ctx;
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Plate | null>(null);
   const [form, setForm] = useState<Partial<Plate>>({
@@ -35,7 +38,6 @@ export default function Plates() {
   const handleSizeChange = (sizeId: string) => {
     const size = plateSizes.find(ps => ps.id === sizeId);
     if (!size) return;
-    // Auto-populate components based on size groups
     const comps: PlateComponent[] = [];
     for (const g of size.groups) {
       const matching = components.filter(c => c.group === g.group);
@@ -62,33 +64,33 @@ export default function Plates() {
     setForm({ ...form, components: pcs });
   };
 
+  // Custo calculado dinamicamente a partir dos dados-base
   const cost = useMemo(() => {
     if (!form.components?.length) return 0;
     let total = 0;
     for (const pc of form.components) {
       const comp = components.find(c => c.id === pc.componentId);
       if (!comp) continue;
-      const ing = ingredients.find(i => i.id === comp.ingredientId);
-      if (!ing) continue;
-      const yf = yieldFactors.find(y => y.ingredientId === comp.ingredientId);
-      total += getComponentCostForWeight(pc.weight, ing, yf);
+      const { ingredient, yieldFactor } = resolveComponentDeps(ctx, comp);
+      if (!ingredient) continue;
+      total += componentCostForWeight(pc.weight, ingredient, yieldFactor);
     }
     for (const ecId of (form.extraCostIds || [])) {
       const ec = extraCosts.find(e => e.id === ecId);
       if (ec) total += ec.value;
     }
     return total;
-  }, [form.components, form.extraCostIds, components, ingredients, yieldFactors, extraCosts]);
+  }, [form.components, form.extraCostIds, components, ctx, extraCosts]);
 
   const price = useMemo(() => {
     if (form.pricingMethod === 'manual') return form.manualPrice || 0;
-    if (form.pricingMethod === 'markup') return cost * (form.markupOrMargin || 0);
-    if (form.pricingMethod === 'margin') return cost / (1 - (form.markupOrMargin || 0) / 100);
+    if (form.pricingMethod === 'markup') return priceByMarkup(cost, form.markupOrMargin || 0);
+    if (form.pricingMethod === 'margin') return priceByMargin(cost, form.markupOrMargin || 0);
     return 0;
   }, [form.pricingMethod, form.manualPrice, form.markupOrMargin, cost]);
 
-  const profit = price - cost;
-  const margin = price > 0 ? (profit / price) * 100 : 0;
+  const profit = unitProfit(price, cost);
+  const margin = realMargin(price, cost);
 
   const handleSave = () => {
     if (!form.name || !form.plateSizeId) { toast.error("Preencha nome e tamanho"); return; }
@@ -156,9 +158,8 @@ export default function Plates() {
                 {(form.components || []).map((pc, i) => {
                   const comp = components.find(c => c.id === pc.componentId);
                   const groupConfig = selectedSize?.groups.find(g => comp && g.group === comp.group);
-                  const ing = comp ? ingredients.find(ig => ig.id === comp.ingredientId) : undefined;
-                  const yf = comp ? yieldFactors.find(y => y.ingredientId === comp.ingredientId) : undefined;
-                  const pcCost = (ing && comp) ? getComponentCostForWeight(pc.weight, ing, yf) : 0;
+                  const deps = comp ? resolveComponentDeps(ctx, comp) : { ingredient: undefined, yieldFactor: undefined };
+                  const pcCost = (deps.ingredient && comp) ? componentCostForWeight(pc.weight, deps.ingredient, deps.yieldFactor) : 0;
 
                   return (
                     <div key={i} className="bg-muted/50 rounded-lg p-3 mb-2">
@@ -273,10 +274,7 @@ export default function Plates() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {plates.map(p => {
-            const c = getPlateCost(p, components, ingredients, yieldFactors, extraCosts);
-            const pr = getPlatePrice(p, c);
-            const pf = pr - c;
-            const mg = pr > 0 ? ((pf / pr) * 100) : 0;
+            const fin = plateFinancials(p, ctx.components, ctx.ingredients, ctx.yieldFactors, ctx.extraCosts);
             const size = plateSizes.find(ps => ps.id === p.plateSizeId);
             return (
               <Card key={p.id} className={!p.active ? 'opacity-50' : ''}>
@@ -305,10 +303,10 @@ export default function Plates() {
                     })}
                   </div>
                   <div className="border-t pt-2 grid grid-cols-2 gap-1 text-sm">
-                    <span className="text-muted-foreground">Custo:</span><span className="text-right">${c.toFixed(2)}</span>
-                    <span className="text-muted-foreground">Preço:</span><span className="text-right font-bold">${pr.toFixed(2)}</span>
-                    <span className="text-muted-foreground">Lucro:</span><span className="text-right text-success">${pf.toFixed(2)}</span>
-                    <span className="text-muted-foreground">Margem:</span><span className="text-right">{mg.toFixed(1)}%</span>
+                    <span className="text-muted-foreground">Custo:</span><span className="text-right">${fin.totalCost.toFixed(2)}</span>
+                    <span className="text-muted-foreground">Preço:</span><span className="text-right font-bold">${fin.price.toFixed(2)}</span>
+                    <span className="text-muted-foreground">Lucro:</span><span className="text-right text-success">${fin.profit.toFixed(2)}</span>
+                    <span className="text-muted-foreground">Margem:</span><span className="text-right">{fin.margin.toFixed(1)}%</span>
                   </div>
                 </CardContent>
               </Card>
