@@ -1,8 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { useCurrency, type CurrencyCode } from "@/contexts/CurrencyContext";
 import { toast } from "sonner";
 
 export default function SettingsPage() {
+  const { currency, setCurrency } = useCurrency();
+
   const handleClear = () => {
     if (confirm("Tem certeza? Isso apagará todos os dados.")) {
       localStorage.removeItem('mealprep-pricing-data');
@@ -43,6 +48,27 @@ export default function SettingsPage() {
         <h1 className="text-3xl font-bold font-display">Configurações</h1>
         <p className="text-muted-foreground mt-1">Preferências gerais do sistema</p>
       </div>
+
+      <Card>
+        <CardHeader><CardTitle className="font-display">Moeda</CardTitle></CardHeader>
+        <CardContent>
+          <div className="max-w-xs space-y-2">
+            <Label>Moeda de exibição</Label>
+            <Select value={currency} onValueChange={(v) => { setCurrency(v as CurrencyCode); toast.success("Moeda atualizada"); }}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="BRL">R$ — Real Brasileiro (BRL)</SelectItem>
+                <SelectItem value="USD">$ — Dólar Americano (USD)</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              A moeda selecionada será usada em todas as telas do sistema.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader><CardTitle className="font-display">Dados</CardTitle></CardHeader>
