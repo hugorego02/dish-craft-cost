@@ -17,6 +17,7 @@ import { toast } from "sonner";
 
 export default function Plates() {
   const ctx = useApp();
+  const { fmt, symbol } = useCurrency();
   const { components, plateSizes, plates, extraCosts, addPlate, updatePlate, deletePlate } = ctx;
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Plate | null>(null);
