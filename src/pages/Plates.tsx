@@ -256,9 +256,9 @@ export default function Plates() {
                   <Info className="h-4 w-4" />Resumo financeiro
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-sm">
-                  <span className="text-muted-foreground">Custo total:</span><span className="text-right font-bold">${cost.toFixed(2)}</span>
-                  <span className="text-muted-foreground">Preço de venda:</span><span className="text-right font-bold">${price.toFixed(2)}</span>
-                  <span className="text-muted-foreground">Lucro bruto:</span><span className="text-right font-bold text-success">${profit.toFixed(2)}</span>
+                  <span className="text-muted-foreground">Custo total:</span><span className="text-right font-bold">{fmt(cost)}</span>
+                  <span className="text-muted-foreground">Preço de venda:</span><span className="text-right font-bold">{fmt(price)}</span>
+                  <span className="text-muted-foreground">Lucro bruto:</span><span className="text-right font-bold text-success">{fmt(profit)}</span>
                   <span className="text-muted-foreground">Margem bruta:</span><span className="text-right font-bold">{margin.toFixed(1)}%</span>
                 </div>
               </div>
