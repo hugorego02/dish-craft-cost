@@ -29,6 +29,7 @@ function emptyIngredient(): Partial<Ingredient> {
 
 export default function Ingredients() {
   const { ingredients, addIngredient, updateIngredient, deleteIngredient } = useApp();
+  const { fmt } = useCurrency();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Ingredient | null>(null);
   const [form, setForm] = useState<Partial<Ingredient>>(emptyIngredient());
