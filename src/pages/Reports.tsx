@@ -1,4 +1,5 @@
 import { useApp } from "@/contexts/AppContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import { usePlateAnalytics } from "@/hooks/usePlateAnalytics";
 import { FOOD_GROUP_LABELS } from "@/types";
 import { componentCostForWeight, cookedToRawWeight, getYieldFactorValue } from "@/lib/calculations";
