@@ -242,7 +242,7 @@ export default function Plates() {
               </div>
 
               {form.pricingMethod === 'manual' && (
-                <div><Label>Preço de venda ($)</Label><Input type="number" step="0.01" value={form.manualPrice || ''} onChange={e => setForm({ ...form, manualPrice: parseFloat(e.target.value) || 0 })} /></div>
+                <div><Label>Preço de venda ({symbol})</Label><Input type="number" step="0.01" value={form.manualPrice || ''} onChange={e => setForm({ ...form, manualPrice: parseFloat(e.target.value) || 0 })} /></div>
               )}
               {form.pricingMethod === 'markup' && (
                 <div><Label>Markup (ex: 2.5 = custo × 2.5)</Label><Input type="number" step="0.1" value={form.markupOrMargin || ''} onChange={e => setForm({ ...form, markupOrMargin: parseFloat(e.target.value) || 0 })} /></div>
