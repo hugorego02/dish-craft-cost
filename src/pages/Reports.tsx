@@ -75,7 +75,7 @@ export default function Reports() {
                           <td className="py-2 text-right">{cd.weight}g</td>
                           <td className="py-2 text-right font-mono">{cd.factor.toFixed(2)}</td>
                           <td className="py-2 text-right font-mono">{cd.rawWeight.toFixed(1)}g</td>
-                          <td className="py-2 text-right font-bold">R$ {cd.cost.toFixed(2)}</td>
+                          <td className="py-2 text-right font-bold">{fmt(cd.cost)}</td>
                         </tr>
                       ))}
                       {ecDetails.map((ec: any) => (
