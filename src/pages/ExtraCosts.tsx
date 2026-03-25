@@ -103,7 +103,7 @@ export default function ExtraCosts() {
                   <tr key={ec.id} className="border-b last:border-0 hover:bg-muted/30">
                     <td className="p-3 font-medium">{ec.name}</td>
                     <td className="p-3 text-muted-foreground">{ec.category}</td>
-                    <td className="p-3 text-right font-mono">${ec.value.toFixed(2)}</td>
+                    <td className="p-3 text-right font-mono">{fmt(ec.value)}</td>
                     <td className="p-3 text-center">{ec.applyPer === 'plate' ? 'Prato' : ec.applyPer === 'batch' ? 'Lote' : 'Pedido'}</td>
                     <td className="p-3 text-right">
                       <div className="flex justify-end gap-1">

@@ -305,9 +305,9 @@ export default function Plates() {
                     })}
                   </div>
                   <div className="border-t pt-2 grid grid-cols-2 gap-1 text-sm">
-                    <span className="text-muted-foreground">Custo:</span><span className="text-right">${fin.totalCost.toFixed(2)}</span>
-                    <span className="text-muted-foreground">Preço:</span><span className="text-right font-bold">${fin.price.toFixed(2)}</span>
-                    <span className="text-muted-foreground">Lucro:</span><span className="text-right text-success">${fin.profit.toFixed(2)}</span>
+                    <span className="text-muted-foreground">Custo:</span><span className="text-right">{fmt(fin.totalCost)}</span>
+                    <span className="text-muted-foreground">Preço:</span><span className="text-right font-bold">{fmt(fin.price)}</span>
+                    <span className="text-muted-foreground">Lucro:</span><span className="text-right text-success">{fmt(fin.profit)}</span>
                     <span className="text-muted-foreground">Margem:</span><span className="text-right">{fin.margin.toFixed(1)}%</span>
                   </div>
                 </CardContent>

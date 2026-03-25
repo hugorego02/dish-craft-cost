@@ -161,7 +161,7 @@ export default function Ingredients() {
                     <tr key={i.id} className="border-b last:border-0 hover:bg-muted/30">
                       <td className="p-3 font-medium">{i.name}</td>
                       <td className="p-3 text-muted-foreground">{i.category}</td>
-                      <td className="p-3 text-right">${(i.price / i.quantity).toFixed(2)}/{i.unit}</td>
+                      <td className="p-3 text-right">{fmt(i.price / i.quantity)}/{i.unit}</td>
                       <td className="p-3 text-right">
                         <div className="flex justify-end gap-1">
                           <Button variant="ghost" size="icon" onClick={() => handleOpen(i)}>
