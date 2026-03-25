@@ -57,7 +57,7 @@ export default function ExtraCosts() {
             <div className="space-y-4">
               <div><Label>Nome</Label><Input value={form.name || ''} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Embalagem marmita" /></div>
               <div className="grid grid-cols-2 gap-4">
-                <div><Label>Valor ($)</Label><Input type="number" step="0.01" value={form.value || ''} onChange={e => setForm({ ...form, value: parseFloat(e.target.value) || 0 })} /></div>
+                <div><Label>Valor ({symbol})</Label><Input type="number" step="0.01" value={form.value || ''} onChange={e => setForm({ ...form, value: parseFloat(e.target.value) || 0 })} /></div>
                 <div>
                   <Label>Aplicar por</Label>
                   <Select value={form.applyPer} onValueChange={v => setForm({ ...form, applyPer: v as ExtraCost['applyPer'] })}>
