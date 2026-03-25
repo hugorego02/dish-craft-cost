@@ -35,9 +35,7 @@ function StatusBadge({ status }: { status: PricingStatus }) {
   );
 }
 
-function fmt(v: number) {
-  return `R$ ${v.toFixed(2)}`;
-}
+// fmt is now provided by useCurrency hook
 
 // ── Sorting ─────────────────────────────────────────────────────────────
 type SortKey = 'name' | 'totalCost' | 'price' | 'profit' | 'margin';
