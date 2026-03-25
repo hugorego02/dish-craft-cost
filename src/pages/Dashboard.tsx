@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePlateAnalytics, type PlateAnalytics, type PricingStatus } from "@/hooks/usePlateAnalytics";
 import { useApp } from "@/contexts/AppContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -34,9 +35,7 @@ function StatusBadge({ status }: { status: PricingStatus }) {
   );
 }
 
-function fmt(v: number) {
-  return `R$ ${v.toFixed(2)}`;
-}
+// fmt is now provided by useCurrency hook
 
 // ── Sorting ─────────────────────────────────────────────────────────────
 type SortKey = 'name' | 'totalCost' | 'price' | 'profit' | 'margin';
@@ -56,6 +55,7 @@ function sortItems(items: PlateAnalytics[], key: SortKey, asc: boolean): PlateAn
 export default function Dashboard() {
   const navigate = useNavigate();
   const { plateSizes } = useApp();
+  const { fmt } = useCurrency();
   const { items, aggregate, loading } = usePlateAnalytics();
 
   // Filters

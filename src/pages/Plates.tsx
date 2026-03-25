@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useApp } from "@/contexts/AppContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import type { Plate, PlateComponent } from "@/types";
 import { FOOD_GROUP_LABELS } from "@/types";
 import { componentCostForWeight, plateFinancials, platePrice as calcPlatePrice, priceByMarkup, priceByMargin, realMargin, unitProfit } from "@/lib/calculations";
@@ -16,6 +17,7 @@ import { toast } from "sonner";
 
 export default function Plates() {
   const ctx = useApp();
+  const { fmt, symbol } = useCurrency();
   const { components, plateSizes, plates, extraCosts, addPlate, updatePlate, deletePlate } = ctx;
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Plate | null>(null);
@@ -198,7 +200,7 @@ export default function Plates() {
                           </div>
                         </div>
                       )}
-                      {pcCost > 0 && <p className="text-xs text-right mt-1 font-mono">Custo: ${pcCost.toFixed(2)}</p>}
+                      {pcCost > 0 && <p className="text-xs text-right mt-1 font-mono">Custo: {fmt(pcCost)}</p>}
                     </div>
                   );
                 })}
@@ -217,7 +219,7 @@ export default function Plates() {
                         setForm({ ...form, extraCostIds: ids.includes(ec.id) ? ids.filter(x => x !== ec.id) : [...ids, ec.id] });
                       }}
                     >
-                      {ec.name} — R${ec.value.toFixed(2)}
+                      {ec.name} — {fmt(ec.value)}
                       <span className="ml-1 text-xs opacity-70">({ec.category})</span>
                     </Button>
                   ))}
@@ -240,7 +242,7 @@ export default function Plates() {
               </div>
 
               {form.pricingMethod === 'manual' && (
-                <div><Label>Preço de venda ($)</Label><Input type="number" step="0.01" value={form.manualPrice || ''} onChange={e => setForm({ ...form, manualPrice: parseFloat(e.target.value) || 0 })} /></div>
+                <div><Label>Preço de venda ({symbol})</Label><Input type="number" step="0.01" value={form.manualPrice || ''} onChange={e => setForm({ ...form, manualPrice: parseFloat(e.target.value) || 0 })} /></div>
               )}
               {form.pricingMethod === 'markup' && (
                 <div><Label>Markup (ex: 2.5 = custo × 2.5)</Label><Input type="number" step="0.1" value={form.markupOrMargin || ''} onChange={e => setForm({ ...form, markupOrMargin: parseFloat(e.target.value) || 0 })} /></div>
@@ -254,9 +256,9 @@ export default function Plates() {
                   <Info className="h-4 w-4" />Resumo financeiro
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-sm">
-                  <span className="text-muted-foreground">Custo total:</span><span className="text-right font-bold">${cost.toFixed(2)}</span>
-                  <span className="text-muted-foreground">Preço de venda:</span><span className="text-right font-bold">${price.toFixed(2)}</span>
-                  <span className="text-muted-foreground">Lucro bruto:</span><span className="text-right font-bold text-success">${profit.toFixed(2)}</span>
+                  <span className="text-muted-foreground">Custo total:</span><span className="text-right font-bold">{fmt(cost)}</span>
+                  <span className="text-muted-foreground">Preço de venda:</span><span className="text-right font-bold">{fmt(price)}</span>
+                  <span className="text-muted-foreground">Lucro bruto:</span><span className="text-right font-bold text-success">{fmt(profit)}</span>
                   <span className="text-muted-foreground">Margem bruta:</span><span className="text-right font-bold">{margin.toFixed(1)}%</span>
                 </div>
               </div>
@@ -303,9 +305,9 @@ export default function Plates() {
                     })}
                   </div>
                   <div className="border-t pt-2 grid grid-cols-2 gap-1 text-sm">
-                    <span className="text-muted-foreground">Custo:</span><span className="text-right">${fin.totalCost.toFixed(2)}</span>
-                    <span className="text-muted-foreground">Preço:</span><span className="text-right font-bold">${fin.price.toFixed(2)}</span>
-                    <span className="text-muted-foreground">Lucro:</span><span className="text-right text-success">${fin.profit.toFixed(2)}</span>
+                    <span className="text-muted-foreground">Custo:</span><span className="text-right">{fmt(fin.totalCost)}</span>
+                    <span className="text-muted-foreground">Preço:</span><span className="text-right font-bold">{fmt(fin.price)}</span>
+                    <span className="text-muted-foreground">Lucro:</span><span className="text-right text-success">{fmt(fin.profit)}</span>
                     <span className="text-muted-foreground">Margem:</span><span className="text-right">{fin.margin.toFixed(1)}%</span>
                   </div>
                 </CardContent>

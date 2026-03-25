@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useApp } from "@/contexts/AppContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import type { ExtraCost } from "@/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ const CATEGORIES = ['Embalagem', 'Operacional', 'Entrega', 'Temperos', 'Outros']
 
 export default function ExtraCosts() {
   const { extraCosts, addExtraCost, updateExtraCost, deleteExtraCost } = useApp();
+  const { fmt, symbol } = useCurrency();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<ExtraCost | null>(null);
   const [form, setForm] = useState<Partial<ExtraCost>>({ name: '', value: 0, applyPer: 'plate', category: 'Embalagem' });
@@ -55,7 +57,7 @@ export default function ExtraCosts() {
             <div className="space-y-4">
               <div><Label>Nome</Label><Input value={form.name || ''} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Embalagem marmita" /></div>
               <div className="grid grid-cols-2 gap-4">
-                <div><Label>Valor ($)</Label><Input type="number" step="0.01" value={form.value || ''} onChange={e => setForm({ ...form, value: parseFloat(e.target.value) || 0 })} /></div>
+                <div><Label>Valor ({symbol})</Label><Input type="number" step="0.01" value={form.value || ''} onChange={e => setForm({ ...form, value: parseFloat(e.target.value) || 0 })} /></div>
                 <div>
                   <Label>Aplicar por</Label>
                   <Select value={form.applyPer} onValueChange={v => setForm({ ...form, applyPer: v as ExtraCost['applyPer'] })}>
@@ -101,7 +103,7 @@ export default function ExtraCosts() {
                   <tr key={ec.id} className="border-b last:border-0 hover:bg-muted/30">
                     <td className="p-3 font-medium">{ec.name}</td>
                     <td className="p-3 text-muted-foreground">{ec.category}</td>
-                    <td className="p-3 text-right font-mono">${ec.value.toFixed(2)}</td>
+                    <td className="p-3 text-right font-mono">{fmt(ec.value)}</td>
                     <td className="p-3 text-center">{ec.applyPer === 'plate' ? 'Prato' : ec.applyPer === 'batch' ? 'Lote' : 'Pedido'}</td>
                     <td className="p-3 text-right">
                       <div className="flex justify-end gap-1">

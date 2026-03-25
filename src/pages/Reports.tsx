@@ -1,4 +1,5 @@
 import { useApp } from "@/contexts/AppContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import { usePlateAnalytics } from "@/hooks/usePlateAnalytics";
 import { FOOD_GROUP_LABELS } from "@/types";
 import { componentCostForWeight, cookedToRawWeight, getYieldFactorValue } from "@/lib/calculations";
@@ -8,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Reports() {
   const ctx = useApp();
+  const { fmt } = useCurrency();
   const { components, plateSizes, extraCosts } = ctx;
   const { items, loading } = usePlateAnalytics();
 
@@ -73,22 +75,22 @@ export default function Reports() {
                           <td className="py-2 text-right">{cd.weight}g</td>
                           <td className="py-2 text-right font-mono">{cd.factor.toFixed(2)}</td>
                           <td className="py-2 text-right font-mono">{cd.rawWeight.toFixed(1)}g</td>
-                          <td className="py-2 text-right font-bold">R$ {cd.cost.toFixed(2)}</td>
+                          <td className="py-2 text-right font-bold">{fmt(cd.cost)}</td>
                         </tr>
                       ))}
                       {ecDetails.map((ec: any) => (
                         <tr key={ec.id} className="border-b last:border-0 text-muted-foreground">
                           <td className="py-2" colSpan={5}>{ec.name} ({ec.category})</td>
-                          <td className="py-2 text-right font-bold">R$ {ec.value.toFixed(2)}</td>
+                          <td className="py-2 text-right font-bold">{fmt(ec.value)}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
                 <div className="bg-accent/50 rounded-lg p-4 grid grid-cols-4 gap-4 text-center">
-                  <div><p className="text-xs text-muted-foreground">Custo</p><p className="text-lg font-bold">R$ {pd.totalCost.toFixed(2)}</p></div>
-                  <div><p className="text-xs text-muted-foreground">Preço</p><p className="text-lg font-bold">R$ {pd.price.toFixed(2)}</p></div>
-                  <div><p className="text-xs text-muted-foreground">Lucro</p><p className="text-lg font-bold text-success">R$ {pd.profit.toFixed(2)}</p></div>
+                  <div><p className="text-xs text-muted-foreground">Custo</p><p className="text-lg font-bold">{fmt(pd.totalCost)}</p></div>
+                  <div><p className="text-xs text-muted-foreground">Preço</p><p className="text-lg font-bold">{fmt(pd.price)}</p></div>
+                  <div><p className="text-xs text-muted-foreground">Lucro</p><p className="text-lg font-bold text-success">{fmt(pd.profit)}</p></div>
                   <div><p className="text-xs text-muted-foreground">Margem</p><p className="text-lg font-bold">{pd.margin.toFixed(1)}%</p></div>
                 </div>
               </CardContent>
