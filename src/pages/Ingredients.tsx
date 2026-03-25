@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useApp } from "@/contexts/AppContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import type { Ingredient, PurchaseUnit } from "@/types";
 import { getCostPerGram } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
