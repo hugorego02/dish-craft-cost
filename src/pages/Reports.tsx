@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Reports() {
   const ctx = useApp();
+  const { fmt } = useCurrency();
   const { components, plateSizes, extraCosts } = ctx;
   const { items, loading } = usePlateAnalytics();
 
