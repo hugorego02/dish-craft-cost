@@ -81,7 +81,7 @@ export default function Reports() {
                       {ecDetails.map((ec: any) => (
                         <tr key={ec.id} className="border-b last:border-0 text-muted-foreground">
                           <td className="py-2" colSpan={5}>{ec.name} ({ec.category})</td>
-                          <td className="py-2 text-right font-bold">R$ {ec.value.toFixed(2)}</td>
+                          <td className="py-2 text-right font-bold">{fmt(ec.value)}</td>
                         </tr>
                       ))}
                     </tbody>
