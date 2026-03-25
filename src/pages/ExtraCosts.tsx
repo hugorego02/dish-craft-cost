@@ -15,6 +15,7 @@ const CATEGORIES = ['Embalagem', 'Operacional', 'Entrega', 'Temperos', 'Outros']
 
 export default function ExtraCosts() {
   const { extraCosts, addExtraCost, updateExtraCost, deleteExtraCost } = useApp();
+  const { fmt, symbol } = useCurrency();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<ExtraCost | null>(null);
   const [form, setForm] = useState<Partial<ExtraCost>>({ name: '', value: 0, applyPer: 'plate', category: 'Embalagem' });
