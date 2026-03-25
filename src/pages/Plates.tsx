@@ -219,7 +219,7 @@ export default function Plates() {
                         setForm({ ...form, extraCostIds: ids.includes(ec.id) ? ids.filter(x => x !== ec.id) : [...ids, ec.id] });
                       }}
                     >
-                      {ec.name} — R${ec.value.toFixed(2)}
+                      {ec.name} — {fmt(ec.value)}
                       <span className="ml-1 text-xs opacity-70">({ec.category})</span>
                     </Button>
                   ))}
