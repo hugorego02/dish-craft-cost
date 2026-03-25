@@ -200,7 +200,7 @@ export default function Plates() {
                           </div>
                         </div>
                       )}
-                      {pcCost > 0 && <p className="text-xs text-right mt-1 font-mono">Custo: ${pcCost.toFixed(2)}</p>}
+                      {pcCost > 0 && <p className="text-xs text-right mt-1 font-mono">Custo: {fmt(pcCost)}</p>}
                     </div>
                   );
                 })}
