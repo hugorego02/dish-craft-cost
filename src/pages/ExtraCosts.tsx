@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useApp } from "@/contexts/AppContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import type { ExtraCost } from "@/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

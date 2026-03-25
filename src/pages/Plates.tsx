@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useApp } from "@/contexts/AppContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import type { Plate, PlateComponent } from "@/types";
 import { FOOD_GROUP_LABELS } from "@/types";
 import { componentCostForWeight, plateFinancials, platePrice as calcPlatePrice, priceByMarkup, priceByMargin, realMargin, unitProfit } from "@/lib/calculations";
