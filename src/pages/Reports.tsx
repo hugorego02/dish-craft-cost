@@ -88,9 +88,9 @@ export default function Reports() {
                   </table>
                 </div>
                 <div className="bg-accent/50 rounded-lg p-4 grid grid-cols-4 gap-4 text-center">
-                  <div><p className="text-xs text-muted-foreground">Custo</p><p className="text-lg font-bold">R$ {pd.totalCost.toFixed(2)}</p></div>
-                  <div><p className="text-xs text-muted-foreground">Preço</p><p className="text-lg font-bold">R$ {pd.price.toFixed(2)}</p></div>
-                  <div><p className="text-xs text-muted-foreground">Lucro</p><p className="text-lg font-bold text-success">R$ {pd.profit.toFixed(2)}</p></div>
+                  <div><p className="text-xs text-muted-foreground">Custo</p><p className="text-lg font-bold">{fmt(pd.totalCost)}</p></div>
+                  <div><p className="text-xs text-muted-foreground">Preço</p><p className="text-lg font-bold">{fmt(pd.price)}</p></div>
+                  <div><p className="text-xs text-muted-foreground">Lucro</p><p className="text-lg font-bold text-success">{fmt(pd.profit)}</p></div>
                   <div><p className="text-xs text-muted-foreground">Margem</p><p className="text-lg font-bold">{pd.margin.toFixed(1)}%</p></div>
                 </div>
               </CardContent>

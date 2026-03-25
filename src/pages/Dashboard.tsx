@@ -55,6 +55,7 @@ function sortItems(items: PlateAnalytics[], key: SortKey, asc: boolean): PlateAn
 export default function Dashboard() {
   const navigate = useNavigate();
   const { plateSizes } = useApp();
+  const { fmt } = useCurrency();
   const { items, aggregate, loading } = usePlateAnalytics();
 
   // Filters
