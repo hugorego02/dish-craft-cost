@@ -296,10 +296,8 @@ export default function Customers() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Nome</TableHead>
-                  <TableHead className="hidden sm:table-cell">Telefone</TableHead>
                   <TableHead className="hidden md:table-cell">Email</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead className="hidden lg:table-cell">Restrições</TableHead>
                   <TableHead className="w-24">Ações</TableHead>
                 </TableRow>
               </TableHeader>
