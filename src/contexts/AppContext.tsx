@@ -165,7 +165,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Load all data from DB
   const fetchAll = useCallback(async () => {
     try {
-      const [ingRes, yfRes, compRes, psRes, plRes, ecRes, custRes] = await Promise.all([
+      const [ingRes, yfRes, compRes, psRes, plRes, ecRes, custRes, ordRes, oiRes] = await Promise.all([
         supabase.from('ingredients').select('*'),
         supabase.from('yield_factors').select('*'),
         supabase.from('components').select('*'),
@@ -173,7 +173,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         supabase.from('plates').select('*'),
         supabase.from('extra_costs').select('*'),
         supabase.from('customers').select('*'),
+        supabase.from('orders').select('*'),
+        supabase.from('order_items').select('*'),
       ]);
+
+      const allItems = oiRes.data || [];
 
       setData({
         ingredients: (ingRes.data || []).map(mapIngredient),
@@ -183,6 +187,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         plates: (plRes.data || []).map(mapPlate),
         extraCosts: (ecRes.data || []).map(mapExtraCost),
         customers: (custRes.data || []).map(mapCustomer),
+        orders: (ordRes.data || []).map(r => mapOrder(r, allItems)),
       });
     } catch (err) {
       console.error('Error loading data:', err);
