@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import type { AppData, Ingredient, YieldFactor, FoodComponent, PlateSize, Plate, ExtraCost, PlateComponent, PlateGroupConfig, FoodGroup } from '@/types';
+import type { AppData, Ingredient, YieldFactor, FoodComponent, PlateSize, Plate, ExtraCost, PlateComponent, PlateGroupConfig, FoodGroup, Customer, CustomerStatus } from '@/types';
 import { toast } from 'sonner';
 
 const defaultData: AppData = {
