@@ -139,13 +139,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Load all data from DB
   const fetchAll = useCallback(async () => {
     try {
-      const [ingRes, yfRes, compRes, psRes, plRes, ecRes] = await Promise.all([
+      const [ingRes, yfRes, compRes, psRes, plRes, ecRes, custRes] = await Promise.all([
         supabase.from('ingredients').select('*'),
         supabase.from('yield_factors').select('*'),
         supabase.from('components').select('*'),
         supabase.from('plate_sizes').select('*'),
         supabase.from('plates').select('*'),
         supabase.from('extra_costs').select('*'),
+        supabase.from('customers').select('*'),
       ]);
 
       setData({
@@ -155,6 +156,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         plateSizes: (psRes.data || []).map(mapPlateSize),
         plates: (plRes.data || []).map(mapPlate),
         extraCosts: (ecRes.data || []).map(mapExtraCost),
+        customers: (custRes.data || []).map(mapCustomer),
       });
     } catch (err) {
       console.error('Error loading data:', err);
