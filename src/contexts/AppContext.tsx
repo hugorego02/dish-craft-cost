@@ -397,6 +397,58 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setData(d => ({ ...d, customers: d.customers.filter(x => x.id !== id) }));
   }, []);
 
+  // --- Orders ---
+  const addOrder = useCallback(async (o: Order) => {
+    const { error } = await supabase.from('orders').insert({
+      id: o.id, customer_id: o.customerId, order_date: o.orderDate,
+      delivery_date: o.deliveryDate || null, status: o.status,
+      payment_method: o.paymentMethod || null, discount: o.discount,
+      notes: o.notes || null,
+    });
+    if (error) { toast.error('Erro ao salvar pedido'); console.error(error); return; }
+
+    if (o.items.length > 0) {
+      const { error: itemsError } = await supabase.from('order_items').insert(
+        o.items.map(i => ({
+          id: i.id, order_id: o.id, plate_id: i.plateId || null,
+          plate_name: i.plateName, quantity: i.quantity, unit_price: i.unitPrice,
+          notes: i.notes || null,
+        }))
+      );
+      if (itemsError) { toast.error('Erro ao salvar itens'); console.error(itemsError); return; }
+    }
+    setData(d => ({ ...d, orders: [...d.orders, o] }));
+  }, []);
+
+  const updateOrder = useCallback(async (o: Order) => {
+    const { error } = await supabase.from('orders').update({
+      customer_id: o.customerId, order_date: o.orderDate,
+      delivery_date: o.deliveryDate || null, status: o.status,
+      payment_method: o.paymentMethod || null, discount: o.discount,
+      notes: o.notes || null,
+    }).eq('id', o.id);
+    if (error) { toast.error('Erro ao atualizar pedido'); console.error(error); return; }
+
+    // Replace items: delete old, insert new
+    await supabase.from('order_items').delete().eq('order_id', o.id);
+    if (o.items.length > 0) {
+      await supabase.from('order_items').insert(
+        o.items.map(i => ({
+          id: i.id, order_id: o.id, plate_id: i.plateId || null,
+          plate_name: i.plateName, quantity: i.quantity, unit_price: i.unitPrice,
+          notes: i.notes || null,
+        }))
+      );
+    }
+    setData(d => ({ ...d, orders: d.orders.map(x => x.id === o.id ? o : x) }));
+  }, []);
+
+  const deleteOrder = useCallback(async (id: string) => {
+    const { error } = await supabase.from('orders').delete().eq('id', id);
+    if (error) { toast.error('Erro ao excluir pedido'); console.error(error); return; }
+    setData(d => ({ ...d, orders: d.orders.filter(x => x.id !== id) }));
+  }, []);
+
   const ctx: AppContextType = {
     ...data,
     loading,
@@ -407,6 +459,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     addPlate, updatePlate, deletePlate,
     addExtraCost, updateExtraCost, deleteExtraCost,
     addCustomer, updateCustomer, deleteCustomer,
+    addOrder, updateOrder, deleteOrder,
   };
 
   return <AppContext.Provider value={ctx}>{children}</AppContext.Provider>;
