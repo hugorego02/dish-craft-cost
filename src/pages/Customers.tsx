@@ -228,7 +228,7 @@ export default function Customers() {
         </Card>
         <Card className="cursor-pointer hover:border-primary/50 transition-colors" onClick={() => setStatusFilter('active')}>
           <CardContent className="p-4 flex items-center gap-3">
-            <UserCheck className="h-5 w-5 text-green-600" />
+            <UserCheck className="h-5 w-5 text-primary" />
             <div>
               <p className="text-2xl font-bold text-foreground">{stats.active}</p>
               <p className="text-xs text-muted-foreground">Ativos</p>
