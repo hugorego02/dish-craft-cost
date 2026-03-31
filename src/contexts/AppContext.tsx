@@ -33,6 +33,9 @@ interface AppContextType extends AppData {
   addExtraCost: (e: ExtraCost) => Promise<void>;
   updateExtraCost: (e: ExtraCost) => Promise<void>;
   deleteExtraCost: (id: string) => Promise<void>;
+  addCustomer: (c: Customer) => Promise<void>;
+  updateCustomer: (c: Customer) => Promise<void>;
+  deleteCustomer: (id: string) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
