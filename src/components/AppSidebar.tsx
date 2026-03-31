@@ -18,6 +18,7 @@ const items = [
   { title: "Tamanhos de Prato", url: "/plate-sizes", icon: Ruler },
   { title: "Pratos", url: "/plates", icon: ChefHat },
   { title: "Custos Extras", url: "/extra-costs", icon: Receipt },
+  { title: "Clientes", url: "/customers", icon: Users },
   { title: "Relatórios", url: "/reports", icon: BarChart3 },
   { title: "Configurações", url: "/settings", icon: Settings },
 ];
