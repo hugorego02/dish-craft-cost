@@ -120,6 +120,46 @@ export interface Customer {
   createdAt: string;
 }
 
+export type OrderStatus = 'pending' | 'confirmed' | 'production' | 'delivered' | 'cancelled';
+
+export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
+  pending: 'Pendente',
+  confirmed: 'Confirmado',
+  production: 'Em Produção',
+  delivered: 'Entregue',
+  cancelled: 'Cancelado',
+};
+
+export const ORDER_STATUS_COLORS: Record<OrderStatus, string> = {
+  pending: 'bg-yellow-100 text-yellow-800',
+  confirmed: 'bg-blue-100 text-blue-800',
+  production: 'bg-purple-100 text-purple-800',
+  delivered: 'bg-green-100 text-green-800',
+  cancelled: 'bg-red-100 text-red-800',
+};
+
+export interface OrderItem {
+  id: string;
+  plateId: string | null;
+  plateName: string;
+  quantity: number;
+  unitPrice: number;
+  notes?: string;
+}
+
+export interface Order {
+  id: string;
+  customerId: string | null;
+  orderDate: string;
+  deliveryDate?: string;
+  status: OrderStatus;
+  paymentMethod?: string;
+  discount: number;
+  notes?: string;
+  items: OrderItem[];
+  createdAt: string;
+}
+
 export interface AppData {
   ingredients: Ingredient[];
   yieldFactors: YieldFactor[];
@@ -128,6 +168,7 @@ export interface AppData {
   plates: Plate[];
   extraCosts: ExtraCost[];
   customers: Customer[];
+  orders: Order[];
 }
 
 // ---- Legacy calculation helpers (delegam para src/lib/calculations) ----

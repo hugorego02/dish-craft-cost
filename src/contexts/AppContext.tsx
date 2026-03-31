@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import type { AppData, Ingredient, YieldFactor, FoodComponent, PlateSize, Plate, ExtraCost, PlateComponent, PlateGroupConfig, FoodGroup, Customer, CustomerStatus } from '@/types';
+import type { AppData, Ingredient, YieldFactor, FoodComponent, PlateSize, Plate, ExtraCost, PlateComponent, PlateGroupConfig, FoodGroup, Customer, CustomerStatus, Order, OrderItem, OrderStatus } from '@/types';
 import { toast } from 'sonner';
 
 const defaultData: AppData = {
@@ -11,6 +11,7 @@ const defaultData: AppData = {
   plates: [],
   extraCosts: [],
   customers: [],
+  orders: [],
 };
 
 interface AppContextType extends AppData {
@@ -36,6 +37,9 @@ interface AppContextType extends AppData {
   addCustomer: (c: Customer) => Promise<void>;
   updateCustomer: (c: Customer) => Promise<void>;
   deleteCustomer: (id: string) => Promise<void>;
+  addOrder: (o: Order) => Promise<void>;
+  updateOrder: (o: Order) => Promise<void>;
+  deleteOrder: (id: string) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -132,6 +136,28 @@ function mapCustomer(row: any): Customer {
   };
 }
 
+function mapOrder(row: any, items: any[]): Order {
+  return {
+    id: row.id,
+    customerId: row.customer_id || null,
+    orderDate: row.order_date,
+    deliveryDate: row.delivery_date || undefined,
+    status: row.status as OrderStatus,
+    paymentMethod: row.payment_method || undefined,
+    discount: Number(row.discount),
+    notes: row.notes || undefined,
+    items: items.filter((i: any) => i.order_id === row.id).map((i: any): OrderItem => ({
+      id: i.id,
+      plateId: i.plate_id || null,
+      plateName: i.plate_name,
+      quantity: Number(i.quantity),
+      unitPrice: Number(i.unit_price),
+      notes: i.notes || undefined,
+    })),
+    createdAt: row.created_at,
+  };
+}
+
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [data, setData] = useState<AppData>(defaultData);
   const [loading, setLoading] = useState(true);
@@ -139,7 +165,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Load all data from DB
   const fetchAll = useCallback(async () => {
     try {
-      const [ingRes, yfRes, compRes, psRes, plRes, ecRes, custRes] = await Promise.all([
+      const [ingRes, yfRes, compRes, psRes, plRes, ecRes, custRes, ordRes, oiRes] = await Promise.all([
         supabase.from('ingredients').select('*'),
         supabase.from('yield_factors').select('*'),
         supabase.from('components').select('*'),
@@ -147,7 +173,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         supabase.from('plates').select('*'),
         supabase.from('extra_costs').select('*'),
         supabase.from('customers').select('*'),
+        supabase.from('orders').select('*'),
+        supabase.from('order_items').select('*'),
       ]);
+
+      const allItems = oiRes.data || [];
 
       setData({
         ingredients: (ingRes.data || []).map(mapIngredient),
@@ -157,6 +187,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         plates: (plRes.data || []).map(mapPlate),
         extraCosts: (ecRes.data || []).map(mapExtraCost),
         customers: (custRes.data || []).map(mapCustomer),
+        orders: (ordRes.data || []).map(r => mapOrder(r, allItems)),
       });
     } catch (err) {
       console.error('Error loading data:', err);
@@ -366,6 +397,58 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setData(d => ({ ...d, customers: d.customers.filter(x => x.id !== id) }));
   }, []);
 
+  // --- Orders ---
+  const addOrder = useCallback(async (o: Order) => {
+    const { error } = await supabase.from('orders').insert({
+      id: o.id, customer_id: o.customerId, order_date: o.orderDate,
+      delivery_date: o.deliveryDate || null, status: o.status,
+      payment_method: o.paymentMethod || null, discount: o.discount,
+      notes: o.notes || null,
+    });
+    if (error) { toast.error('Erro ao salvar pedido'); console.error(error); return; }
+
+    if (o.items.length > 0) {
+      const { error: itemsError } = await supabase.from('order_items').insert(
+        o.items.map(i => ({
+          id: i.id, order_id: o.id, plate_id: i.plateId || null,
+          plate_name: i.plateName, quantity: i.quantity, unit_price: i.unitPrice,
+          notes: i.notes || null,
+        }))
+      );
+      if (itemsError) { toast.error('Erro ao salvar itens'); console.error(itemsError); return; }
+    }
+    setData(d => ({ ...d, orders: [...d.orders, o] }));
+  }, []);
+
+  const updateOrder = useCallback(async (o: Order) => {
+    const { error } = await supabase.from('orders').update({
+      customer_id: o.customerId, order_date: o.orderDate,
+      delivery_date: o.deliveryDate || null, status: o.status,
+      payment_method: o.paymentMethod || null, discount: o.discount,
+      notes: o.notes || null,
+    }).eq('id', o.id);
+    if (error) { toast.error('Erro ao atualizar pedido'); console.error(error); return; }
+
+    // Replace items: delete old, insert new
+    await supabase.from('order_items').delete().eq('order_id', o.id);
+    if (o.items.length > 0) {
+      await supabase.from('order_items').insert(
+        o.items.map(i => ({
+          id: i.id, order_id: o.id, plate_id: i.plateId || null,
+          plate_name: i.plateName, quantity: i.quantity, unit_price: i.unitPrice,
+          notes: i.notes || null,
+        }))
+      );
+    }
+    setData(d => ({ ...d, orders: d.orders.map(x => x.id === o.id ? o : x) }));
+  }, []);
+
+  const deleteOrder = useCallback(async (id: string) => {
+    const { error } = await supabase.from('orders').delete().eq('id', id);
+    if (error) { toast.error('Erro ao excluir pedido'); console.error(error); return; }
+    setData(d => ({ ...d, orders: d.orders.filter(x => x.id !== id) }));
+  }, []);
+
   const ctx: AppContextType = {
     ...data,
     loading,
@@ -376,6 +459,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     addPlate, updatePlate, deletePlate,
     addExtraCost, updateExtraCost, deleteExtraCost,
     addCustomer, updateCustomer, deleteCustomer,
+    addOrder, updateOrder, deleteOrder,
   };
 
   return <AppContext.Provider value={ctx}>{children}</AppContext.Provider>;

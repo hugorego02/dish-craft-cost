@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, ShoppingCart, FlameKindling, UtensilsCrossed,
-  Ruler, ChefHat, Receipt, BarChart3, Settings, Users
+  Ruler, ChefHat, Receipt, BarChart3, Settings, Users, Package
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -19,6 +19,7 @@ const items = [
   { title: "Pratos", url: "/plates", icon: ChefHat },
   { title: "Custos Extras", url: "/extra-costs", icon: Receipt },
   { title: "Clientes", url: "/customers", icon: Users },
+  { title: "Pedidos", url: "/orders", icon: Package },
   { title: "Relatórios", url: "/reports", icon: BarChart3 },
   { title: "Configurações", url: "/settings", icon: Settings },
 ];

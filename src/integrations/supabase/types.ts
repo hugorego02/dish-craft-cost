@@ -158,6 +158,95 @@ export type Database = {
         }
         Relationships: []
       }
+      order_items: {
+        Row: {
+          id: string
+          notes: string | null
+          order_id: string
+          plate_id: string | null
+          plate_name: string
+          quantity: number
+          unit_price: number
+        }
+        Insert: {
+          id?: string
+          notes?: string | null
+          order_id: string
+          plate_id?: string | null
+          plate_name: string
+          quantity?: number
+          unit_price?: number
+        }
+        Update: {
+          id?: string
+          notes?: string | null
+          order_id?: string
+          plate_id?: string | null
+          plate_name?: string
+          quantity?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_plate_id_fkey"
+            columns: ["plate_id"]
+            isOneToOne: false
+            referencedRelation: "plates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          customer_id: string | null
+          delivery_date: string | null
+          discount: number
+          id: string
+          notes: string | null
+          order_date: string
+          payment_method: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id?: string | null
+          delivery_date?: string | null
+          discount?: number
+          id?: string
+          notes?: string | null
+          order_date?: string
+          payment_method?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string | null
+          delivery_date?: string | null
+          discount?: number
+          id?: string
+          notes?: string | null
+          order_date?: string
+          payment_method?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       plate_sizes: {
         Row: {
           active: boolean
