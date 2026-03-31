@@ -12,7 +12,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
-import { Plus, Trash2, Pencil, Info } from "lucide-react";
+import { Plus, Trash2, Pencil, Info, ChevronDown, ChevronUp, BarChart3 } from "lucide-react";
+import PlateFinancialDetail from "@/components/PlateFinancialDetail";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "sonner";
 
 export default function Plates() {
