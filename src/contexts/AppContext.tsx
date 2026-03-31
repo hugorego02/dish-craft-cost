@@ -339,6 +339,33 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setData(d => ({ ...d, extraCosts: d.extraCosts.filter(x => x.id !== id) }));
   }, []);
 
+  // --- Customers ---
+  const addCustomer = useCallback(async (c: Customer) => {
+    const { error } = await supabase.from('customers').insert({
+      id: c.id, name: c.name, phone: c.phone || null, email: c.email || null,
+      address: c.address || null, dietary_restrictions: c.dietaryRestrictions,
+      preferences: c.preferences, notes: c.notes || null, status: c.status,
+    });
+    if (error) { toast.error('Erro ao salvar cliente'); console.error(error); return; }
+    setData(d => ({ ...d, customers: [...d.customers, c] }));
+  }, []);
+
+  const updateCustomer = useCallback(async (c: Customer) => {
+    const { error } = await supabase.from('customers').update({
+      name: c.name, phone: c.phone || null, email: c.email || null,
+      address: c.address || null, dietary_restrictions: c.dietaryRestrictions,
+      preferences: c.preferences, notes: c.notes || null, status: c.status,
+    }).eq('id', c.id);
+    if (error) { toast.error('Erro ao atualizar cliente'); console.error(error); return; }
+    setData(d => ({ ...d, customers: d.customers.map(x => x.id === c.id ? c : x) }));
+  }, []);
+
+  const deleteCustomer = useCallback(async (id: string) => {
+    const { error } = await supabase.from('customers').delete().eq('id', id);
+    if (error) { toast.error('Erro ao excluir cliente'); console.error(error); return; }
+    setData(d => ({ ...d, customers: d.customers.filter(x => x.id !== id) }));
+  }, []);
+
   const ctx: AppContextType = {
     ...data,
     loading,
@@ -348,6 +375,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     addPlateSize, updatePlateSize, deletePlateSize,
     addPlate, updatePlate, deletePlate,
     addExtraCost, updateExtraCost, deleteExtraCost,
+    addCustomer, updateCustomer, deleteCustomer,
   };
 
   return <AppContext.Provider value={ctx}>{children}</AppContext.Provider>;
