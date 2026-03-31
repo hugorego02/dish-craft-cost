@@ -37,6 +37,9 @@ interface AppContextType extends AppData {
   addCustomer: (c: Customer) => Promise<void>;
   updateCustomer: (c: Customer) => Promise<void>;
   deleteCustomer: (id: string) => Promise<void>;
+  addOrder: (o: Order) => Promise<void>;
+  updateOrder: (o: Order) => Promise<void>;
+  deleteOrder: (id: string) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | null>(null);

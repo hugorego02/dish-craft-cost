@@ -37,7 +37,7 @@ const statusIcons: Record<OrderStatus, React.ReactNode> = {
 
 export default function Orders() {
   const { orders, addOrder, updateOrder, deleteOrder, customers, plates, components, ingredients, yieldFactors, extraCosts } = useApp();
-  const { format: formatCurrency } = useCurrency();
+  const { fmt: formatCurrency } = useCurrency();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [dialogOpen, setDialogOpen] = useState(false);
