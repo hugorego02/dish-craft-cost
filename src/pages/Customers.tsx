@@ -296,10 +296,8 @@ export default function Customers() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Nome</TableHead>
-                  <TableHead className="hidden sm:table-cell">Telefone</TableHead>
                   <TableHead className="hidden md:table-cell">Email</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead className="hidden lg:table-cell">Restrições</TableHead>
                   <TableHead className="w-24">Ações</TableHead>
                 </TableRow>
               </TableHeader>
@@ -316,19 +314,8 @@ export default function Customers() {
                           {c.name}
                         </div>
                       </TableCell>
-                      <TableCell className="hidden sm:table-cell text-muted-foreground">{c.phone || '—'}</TableCell>
                       <TableCell className="hidden md:table-cell text-muted-foreground">{c.email || '—'}</TableCell>
                       <TableCell>{statusBadge(c.status)}</TableCell>
-                      <TableCell className="hidden lg:table-cell">
-                        <div className="flex flex-wrap gap-1">
-                          {c.dietaryRestrictions.slice(0, 2).map(r => (
-                            <Badge key={r} variant="outline" className="text-xs">{r}</Badge>
-                          ))}
-                          {c.dietaryRestrictions.length > 2 && (
-                            <Badge variant="outline" className="text-xs">+{c.dietaryRestrictions.length - 2}</Badge>
-                          )}
-                        </div>
-                      </TableCell>
                       <TableCell>
                         <div className="flex gap-1" onClick={e => e.stopPropagation()}>
                           <Button size="icon" variant="ghost" onClick={() => openEdit(c)}>
@@ -342,7 +329,7 @@ export default function Customers() {
                     </TableRow>
                     {expandedId === c.id && (
                       <TableRow>
-                        <TableCell colSpan={6} className="bg-muted/30 p-4">
+                        <TableCell colSpan={4} className="bg-muted/30 p-4">
                           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
                             <div className="space-y-2">
                               <p className="font-medium text-foreground">Contato</p>
