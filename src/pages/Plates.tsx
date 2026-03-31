@@ -24,8 +24,6 @@ export default function Plates() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Plate | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [open, setOpen] = useState(false);
-  const [editing, setEditing] = useState<Plate | null>(null);
   const [form, setForm] = useState<Partial<Plate>>({
     name: '', plateSizeId: '', type: 'standard', components: [], extraCostIds: [],
     pricingMethod: 'manual', manualPrice: 0, markupOrMargin: 0, active: true,
