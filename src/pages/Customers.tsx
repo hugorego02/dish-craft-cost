@@ -316,19 +316,8 @@ export default function Customers() {
                           {c.name}
                         </div>
                       </TableCell>
-                      <TableCell className="hidden sm:table-cell text-muted-foreground">{c.phone || '—'}</TableCell>
                       <TableCell className="hidden md:table-cell text-muted-foreground">{c.email || '—'}</TableCell>
                       <TableCell>{statusBadge(c.status)}</TableCell>
-                      <TableCell className="hidden lg:table-cell">
-                        <div className="flex flex-wrap gap-1">
-                          {c.dietaryRestrictions.slice(0, 2).map(r => (
-                            <Badge key={r} variant="outline" className="text-xs">{r}</Badge>
-                          ))}
-                          {c.dietaryRestrictions.length > 2 && (
-                            <Badge variant="outline" className="text-xs">+{c.dietaryRestrictions.length - 2}</Badge>
-                          )}
-                        </div>
-                      </TableCell>
                       <TableCell>
                         <div className="flex gap-1" onClick={e => e.stopPropagation()}>
                           <Button size="icon" variant="ghost" onClick={() => openEdit(c)}>
