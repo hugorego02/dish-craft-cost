@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, ShoppingCart, FlameKindling, UtensilsCrossed,
-  Ruler, ChefHat, Receipt, BarChart3, Settings
+  Ruler, ChefHat, Receipt, BarChart3, Settings, Users
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
