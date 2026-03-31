@@ -127,6 +127,7 @@ export interface AppData {
   plateSizes: PlateSize[];
   plates: Plate[];
   extraCosts: ExtraCost[];
+  customers: Customer[];
 }
 
 // ---- Legacy calculation helpers (delegam para src/lib/calculations) ----
