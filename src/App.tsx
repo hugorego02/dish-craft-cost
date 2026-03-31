@@ -16,6 +16,7 @@ import ExtraCosts from "@/pages/ExtraCosts";
 import Reports from "@/pages/Reports";
 import SettingsPage from "@/pages/Settings";
 import Customers from "@/pages/Customers";
+import Orders from "@/pages/Orders";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
