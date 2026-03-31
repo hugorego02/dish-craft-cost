@@ -56,6 +56,45 @@ export type Database = {
           },
         ]
       }
+      customers: {
+        Row: {
+          address: string | null
+          created_at: string
+          dietary_restrictions: string[] | null
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          preferences: string[] | null
+          status: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          dietary_restrictions?: string[] | null
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          preferences?: string[] | null
+          status?: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          dietary_restrictions?: string[] | null
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          preferences?: string[] | null
+          status?: string
+        }
+        Relationships: []
+      }
       extra_costs: {
         Row: {
           apply_per: string

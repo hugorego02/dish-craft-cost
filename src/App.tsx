@@ -15,6 +15,7 @@ import Plates from "@/pages/Plates";
 import ExtraCosts from "@/pages/ExtraCosts";
 import Reports from "@/pages/Reports";
 import SettingsPage from "@/pages/Settings";
+import Customers from "@/pages/Customers";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
               <Route path="/plate-sizes" element={<PlateSizes />} />
               <Route path="/plates" element={<Plates />} />
               <Route path="/extra-costs" element={<ExtraCosts />} />
+              <Route path="/customers" element={<Customers />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Route>
