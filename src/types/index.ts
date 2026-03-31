@@ -99,6 +99,27 @@ export interface ExtraCost {
   notes?: string;
 }
 
+export type CustomerStatus = 'active' | 'inactive' | 'vip';
+
+export const CUSTOMER_STATUS_LABELS: Record<CustomerStatus, string> = {
+  active: 'Ativo',
+  inactive: 'Inativo',
+  vip: 'VIP',
+};
+
+export interface Customer {
+  id: string;
+  name: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  dietaryRestrictions: string[];
+  preferences: string[];
+  notes?: string;
+  status: CustomerStatus;
+  createdAt: string;
+}
+
 export interface AppData {
   ingredients: Ingredient[];
   yieldFactors: YieldFactor[];
