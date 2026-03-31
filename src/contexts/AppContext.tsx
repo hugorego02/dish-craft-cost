@@ -136,6 +136,28 @@ function mapCustomer(row: any): Customer {
   };
 }
 
+function mapOrder(row: any, items: any[]): Order {
+  return {
+    id: row.id,
+    customerId: row.customer_id || null,
+    orderDate: row.order_date,
+    deliveryDate: row.delivery_date || undefined,
+    status: row.status as OrderStatus,
+    paymentMethod: row.payment_method || undefined,
+    discount: Number(row.discount),
+    notes: row.notes || undefined,
+    items: items.filter((i: any) => i.order_id === row.id).map((i: any): OrderItem => ({
+      id: i.id,
+      plateId: i.plate_id || null,
+      plateName: i.plate_name,
+      quantity: Number(i.quantity),
+      unitPrice: Number(i.unit_price),
+      notes: i.notes || undefined,
+    })),
+    createdAt: row.created_at,
+  };
+}
+
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [data, setData] = useState<AppData>(defaultData);
   const [loading, setLoading] = useState(true);
