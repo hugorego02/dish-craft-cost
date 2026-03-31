@@ -117,6 +117,21 @@ function mapExtraCost(row: any): ExtraCost {
   };
 }
 
+function mapCustomer(row: any): Customer {
+  return {
+    id: row.id,
+    name: row.name,
+    phone: row.phone || undefined,
+    email: row.email || undefined,
+    address: row.address || undefined,
+    dietaryRestrictions: row.dietary_restrictions || [],
+    preferences: row.preferences || [],
+    notes: row.notes || undefined,
+    status: row.status as CustomerStatus,
+    createdAt: row.created_at,
+  };
+}
+
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [data, setData] = useState<AppData>(defaultData);
   const [loading, setLoading] = useState(true);
