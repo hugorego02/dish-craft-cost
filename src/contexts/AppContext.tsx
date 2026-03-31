@@ -10,6 +10,7 @@ const defaultData: AppData = {
   plateSizes: [],
   plates: [],
   extraCosts: [],
+  customers: [],
 };
 
 interface AppContextType extends AppData {
