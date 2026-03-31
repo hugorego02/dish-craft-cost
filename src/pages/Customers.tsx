@@ -237,7 +237,7 @@ export default function Customers() {
         </Card>
         <Card className="cursor-pointer hover:border-primary/50 transition-colors" onClick={() => setStatusFilter('vip')}>
           <CardContent className="p-4 flex items-center gap-3">
-            <Crown className="h-5 w-5 text-amber-500" />
+            <Crown className="h-5 w-5 text-accent-foreground" />
             <div>
               <p className="text-2xl font-bold text-foreground">{stats.vip}</p>
               <p className="text-xs text-muted-foreground">VIP</p>
