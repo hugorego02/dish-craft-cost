@@ -12,7 +12,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
-import { Plus, Trash2, Pencil, Info } from "lucide-react";
+import { Plus, Trash2, Pencil, Info, ChevronDown, ChevronUp, BarChart3 } from "lucide-react";
+import PlateFinancialDetail from "@/components/PlateFinancialDetail";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "sonner";
 
 export default function Plates() {
@@ -21,6 +23,7 @@ export default function Plates() {
   const { components, plateSizes, plates, extraCosts, addPlate, updatePlate, deletePlate } = ctx;
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Plate | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [form, setForm] = useState<Partial<Plate>>({
     name: '', plateSizeId: '', type: 'standard', components: [], extraCostIds: [],
     pricingMethod: 'manual', manualPrice: 0, markupOrMargin: 0, active: true,
@@ -278,8 +281,9 @@ export default function Plates() {
           {plates.map(p => {
             const fin = plateFinancials(p, ctx.components, ctx.ingredients, ctx.yieldFactors, ctx.extraCosts);
             const size = plateSizes.find(ps => ps.id === p.plateSizeId);
+            const isExpanded = expandedId === p.id;
             return (
-              <Card key={p.id} className={!p.active ? 'opacity-50' : ''}>
+              <Card key={p.id} className={`${!p.active ? 'opacity-50' : ''} ${isExpanded ? 'col-span-full' : ''}`}>
                 <CardContent className="p-4">
                   <div className="flex justify-between items-start mb-3">
                     <div>
@@ -287,29 +291,42 @@ export default function Plates() {
                       <p className="text-xs text-muted-foreground">{size?.name} • {p.type === 'customizable' ? 'Personalizável' : 'Padrão'}</p>
                     </div>
                     <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setExpandedId(isExpanded ? null : p.id)}
+                        title="Indicadores financeiros"
+                      >
+                        <BarChart3 className="h-4 w-4" />
+                      </Button>
                       <Button variant="ghost" size="icon" onClick={() => handleOpen(p)}><Pencil className="h-4 w-4" /></Button>
                       <Button variant="ghost" size="icon" onClick={() => { deletePlate(p.id); toast.success("Removido"); }}>
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </div>
                   </div>
-                  <div className="space-y-1 text-sm mb-3">
-                    {p.components.map((pc, i) => {
-                      const comp = components.find(x => x.id === pc.componentId);
-                      return comp ? (
-                        <div key={i} className="flex justify-between">
-                          <span className="text-muted-foreground">{comp.name}</span>
-                          <span className="font-mono">{pc.weight}g</span>
-                        </div>
-                      ) : null;
-                    })}
-                  </div>
-                  <div className="border-t pt-2 grid grid-cols-2 gap-1 text-sm">
-                    <span className="text-muted-foreground">Custo:</span><span className="text-right">{fmt(fin.totalCost)}</span>
-                    <span className="text-muted-foreground">Preço:</span><span className="text-right font-bold">{fmt(fin.price)}</span>
-                    <span className="text-muted-foreground">Lucro:</span><span className="text-right text-success">{fmt(fin.profit)}</span>
-                    <span className="text-muted-foreground">Margem:</span><span className="text-right">{fin.margin.toFixed(1)}%</span>
-                  </div>
+                  {!isExpanded && (
+                    <>
+                      <div className="space-y-1 text-sm mb-3">
+                        {p.components.map((pc, i) => {
+                          const comp = components.find(x => x.id === pc.componentId);
+                          return comp ? (
+                            <div key={i} className="flex justify-between">
+                              <span className="text-muted-foreground">{comp.name}</span>
+                              <span className="font-mono">{pc.weight}g</span>
+                            </div>
+                          ) : null;
+                        })}
+                      </div>
+                      <div className="border-t pt-2 grid grid-cols-2 gap-1 text-sm">
+                        <span className="text-muted-foreground">Custo:</span><span className="text-right">{fmt(fin.totalCost)}</span>
+                        <span className="text-muted-foreground">Preço:</span><span className="text-right font-bold">{fmt(fin.price)}</span>
+                        <span className="text-muted-foreground">Lucro:</span><span className="text-right text-success">{fmt(fin.profit)}</span>
+                        <span className="text-muted-foreground">Margem:</span><span className="text-right">{fin.margin.toFixed(1)}%</span>
+                      </div>
+                    </>
+                  )}
+                  {isExpanded && <PlateFinancialDetail plate={p} />}
                 </CardContent>
               </Card>
             );
