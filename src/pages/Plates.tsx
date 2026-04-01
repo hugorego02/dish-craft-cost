@@ -262,7 +262,7 @@ export default function Plates() {
                   {cost > 0 && (form.markupOrMargin || 0) > 0 && (
                     <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 space-y-2">
                       <p className="text-xs font-medium text-primary">Preço sugerido para {form.markupOrMargin}% de margem:</p>
-                      <p className="text-2xl font-bold text-primary">{fmt(price)}</p>
+                      <p className="text-2xl font-bold text-primary">{fmt(suggestedPrice)}</p>
                       <div className="flex items-center gap-2 pt-1">
                         <Label className="text-xs whitespace-nowrap text-muted-foreground">Ajustar manualmente:</Label>
                         <Input
