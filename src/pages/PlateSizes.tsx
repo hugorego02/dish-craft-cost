@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Trash2, Pencil, Scale } from "lucide-react";
+import { Plus, Trash2, Pencil, Scale, Ruler } from "lucide-react";
+import EmptyState from "@/components/EmptyState";
 import { toast } from "sonner";
 
 const ALL_GROUPS: FoodGroup[] = ['protein', 'carb', 'grain', 'veggie', 'sauce', 'extra'];
@@ -131,9 +132,13 @@ export default function PlateSizes() {
       </div>
 
       {plateSizes.length === 0 ? (
-        <Card><CardContent className="py-12 text-center text-muted-foreground">
-          Nenhum tamanho criado. Crie marmitas personalizadas para seus clientes.
-        </CardContent></Card>
+        <EmptyState
+          icon={<Ruler className="h-7 w-7" />}
+          title="Nenhum tamanho de marmita"
+          description="Defina os tamanhos das suas marmitas (P, M, G) com os grupos alimentares e pesos de cada porção."
+          actionLabel="Novo Tamanho"
+          onAction={() => handleOpen()}
+        />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {plateSizes.map(ps => (

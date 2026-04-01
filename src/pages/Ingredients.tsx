@@ -9,7 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Trash2, Pencil } from "lucide-react";
+import { Plus, Trash2, Pencil, ShoppingBasket } from "lucide-react";
+import EmptyState from "@/components/EmptyState";
 import { toast } from "sonner";
 
 const UNITS: { value: PurchaseUnit; label: string }[] = [
@@ -138,11 +139,19 @@ export default function Ingredients() {
       </div>
 
       {ingredients.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center text-muted-foreground">
-            Nenhum insumo cadastrado. Clique em "Novo Insumo" para começar.
-          </CardContent>
-        </Card>
+        <EmptyState
+          icon={<ShoppingBasket className="h-7 w-7" />}
+          title="Nenhum insumo cadastrado"
+          description="Insumos são a base do seu sistema. Comece cadastrando os alimentos que você compra para montar suas marmitas."
+          actionLabel="Novo Insumo"
+          onAction={() => handleOpen()}
+          steps={[
+            { label: 'Insumos' },
+            { label: 'Componentes' },
+            { label: 'Tamanhos' },
+            { label: 'Pratos' },
+          ]}
+        />
       ) : (
         <Card>
           <CardContent className="p-0">

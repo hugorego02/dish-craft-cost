@@ -10,7 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Trash2, Pencil, Info } from "lucide-react";
+import { Plus, Trash2, Pencil, Info, Layers } from "lucide-react";
+import EmptyState from "@/components/EmptyState";
 import { toast } from "sonner";
 
 const GROUPS: FoodGroup[] = ['protein', 'carb', 'grain', 'veggie', 'sauce', 'extra'];
@@ -152,9 +153,19 @@ export default function Components() {
       </div>
 
       {components.length === 0 ? (
-        <Card><CardContent className="py-12 text-center text-muted-foreground">
-          Nenhum componente criado. Cadastre componentes com base nos seus insumos.
-        </CardContent></Card>
+        <EmptyState
+          icon={<Layers className="h-7 w-7" />}
+          title="Nenhum componente criado"
+          description="Componentes são preparações feitas a partir dos insumos (ex: arroz cozido, frango grelhado). Cadastre seus insumos primeiro."
+          actionLabel={ingredients.length > 0 ? "Novo Componente" : undefined}
+          onAction={ingredients.length > 0 ? () => handleOpen() : undefined}
+          steps={[
+            { label: 'Insumos', done: ingredients.length > 0 },
+            { label: 'Componentes' },
+            { label: 'Tamanhos' },
+            { label: 'Pratos' },
+          ]}
+        />
       ) : (
         <Card><CardContent className="p-0">
           <div className="overflow-x-auto">

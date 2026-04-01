@@ -12,7 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
-import { Plus, Trash2, Pencil, Info, ChevronDown, ChevronUp, BarChart3 } from "lucide-react";
+import { Plus, Trash2, Pencil, Info, ChevronDown, ChevronUp, BarChart3, UtensilsCrossed } from "lucide-react";
+import EmptyState from "@/components/EmptyState";
 import PlateFinancialDetail from "@/components/PlateFinancialDetail";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "sonner";
@@ -273,9 +274,19 @@ export default function Plates() {
       </div>
 
       {plates.length === 0 ? (
-        <Card><CardContent className="py-12 text-center text-muted-foreground">
-          Nenhum prato montado. Crie tamanhos e componentes primeiro, depois monte seus pratos aqui.
-        </CardContent></Card>
+        <EmptyState
+          icon={<UtensilsCrossed className="h-7 w-7" />}
+          title="Nenhum prato montado"
+          description="Monte seus pratos combinando componentes com tamanhos de marmita. Cadastre insumos, componentes e tamanhos primeiro."
+          actionLabel={components.length > 0 && plateSizes.length > 0 ? "Novo Prato" : undefined}
+          onAction={components.length > 0 && plateSizes.length > 0 ? () => handleOpen() : undefined}
+          steps={[
+            { label: 'Insumos', done: ctx.ingredients.length > 0 },
+            { label: 'Componentes', done: components.length > 0 },
+            { label: 'Tamanhos', done: plateSizes.length > 0 },
+            { label: 'Pratos' },
+          ]}
+        />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {plates.map(p => {

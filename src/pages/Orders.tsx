@@ -15,6 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import EmptyState from '@/components/EmptyState';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import {
@@ -237,14 +238,15 @@ export default function Orders() {
 
       {/* Orders List */}
       {filtered.length === 0 ? (
-        <Card>
-          <CardContent className="p-12 text-center">
-            <Package className="h-12 w-12 mx-auto text-muted-foreground/40 mb-4" />
-            <p className="text-muted-foreground">
-              {orders.length === 0 ? 'Nenhum pedido registrado ainda.' : 'Nenhum pedido encontrado.'}
-            </p>
-          </CardContent>
-        </Card>
+        <EmptyState
+          icon={<Package className="h-7 w-7" />}
+          title={orders.length === 0 ? 'Nenhum pedido registrado' : 'Nenhum resultado'}
+          description={orders.length === 0
+            ? 'Registre pedidos para acompanhar vendas, status de produção e entregas dos seus clientes.'
+            : 'Nenhum pedido encontrado com esses filtros.'}
+          actionLabel={orders.length === 0 ? 'Novo Pedido' : undefined}
+          onAction={orders.length === 0 ? openNew : undefined}
+        />
       ) : (
         <Card>
           <div className="overflow-x-auto">

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import EmptyState from '@/components/EmptyState';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -281,14 +282,15 @@ export default function Customers() {
 
       {/* Customer Table */}
       {filtered.length === 0 ? (
-        <Card>
-          <CardContent className="p-12 text-center">
-            <Users className="h-12 w-12 mx-auto text-muted-foreground/40 mb-4" />
-            <p className="text-muted-foreground">
-              {customers.length === 0 ? 'Nenhum cliente cadastrado ainda.' : 'Nenhum cliente encontrado com esses filtros.'}
-            </p>
-          </CardContent>
-        </Card>
+        <EmptyState
+          icon={<Users className="h-7 w-7" />}
+          title={customers.length === 0 ? 'Nenhum cliente cadastrado' : 'Nenhum resultado'}
+          description={customers.length === 0
+            ? 'Cadastre seus clientes para organizar pedidos, preferências e histórico de compras.'
+            : 'Nenhum cliente encontrado com esses filtros. Tente outra busca.'}
+          actionLabel={customers.length === 0 ? 'Novo Cliente' : undefined}
+          onAction={customers.length === 0 ? openNew : undefined}
+        />
       ) : (
         <Card>
           <div className="overflow-x-auto">
