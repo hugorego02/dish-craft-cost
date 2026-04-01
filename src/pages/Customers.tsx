@@ -281,14 +281,15 @@ export default function Customers() {
 
       {/* Customer Table */}
       {filtered.length === 0 ? (
-        <Card>
-          <CardContent className="p-12 text-center">
-            <Users className="h-12 w-12 mx-auto text-muted-foreground/40 mb-4" />
-            <p className="text-muted-foreground">
-              {customers.length === 0 ? 'Nenhum cliente cadastrado ainda.' : 'Nenhum cliente encontrado com esses filtros.'}
-            </p>
-          </CardContent>
-        </Card>
+        <EmptyState
+          icon={<Users className="h-7 w-7" />}
+          title={customers.length === 0 ? 'Nenhum cliente cadastrado' : 'Nenhum resultado'}
+          description={customers.length === 0
+            ? 'Cadastre seus clientes para organizar pedidos, preferências e histórico de compras.'
+            : 'Nenhum cliente encontrado com esses filtros. Tente outra busca.'}
+          actionLabel={customers.length === 0 ? 'Novo Cliente' : undefined}
+          onAction={customers.length === 0 ? openNew : undefined}
+        />
       ) : (
         <Card>
           <div className="overflow-x-auto">
