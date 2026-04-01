@@ -274,9 +274,19 @@ export default function Plates() {
       </div>
 
       {plates.length === 0 ? (
-        <Card><CardContent className="py-12 text-center text-muted-foreground">
-          Nenhum prato montado. Crie tamanhos e componentes primeiro, depois monte seus pratos aqui.
-        </CardContent></Card>
+        <EmptyState
+          icon={<UtensilsCrossed className="h-7 w-7" />}
+          title="Nenhum prato montado"
+          description="Monte seus pratos combinando componentes com tamanhos de marmita. Cadastre insumos, componentes e tamanhos primeiro."
+          actionLabel={components.length > 0 && plateSizes.length > 0 ? "Novo Prato" : undefined}
+          onAction={components.length > 0 && plateSizes.length > 0 ? () => handleOpen() : undefined}
+          steps={[
+            { label: 'Insumos', done: ctx.ingredients.length > 0 },
+            { label: 'Componentes', done: components.length > 0 },
+            { label: 'Tamanhos', done: plateSizes.length > 0 },
+            { label: 'Pratos' },
+          ]}
+        />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {plates.map(p => {

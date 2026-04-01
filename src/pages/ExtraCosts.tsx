@@ -85,9 +85,13 @@ export default function ExtraCosts() {
       </div>
 
       {extraCosts.length === 0 ? (
-        <Card><CardContent className="py-12 text-center text-muted-foreground">
-          Nenhum custo extra cadastrado.
-        </CardContent></Card>
+        <EmptyState
+          icon={<Receipt className="h-7 w-7" />}
+          title="Nenhum custo extra cadastrado"
+          description="Custos extras incluem embalagens, gás, entrega e outros gastos operacionais que impactam o preço final da marmita."
+          actionLabel="Novo Custo Extra"
+          onAction={() => handleOpen()}
+        />
       ) : (
         <Card><CardContent className="p-0">
           <div className="overflow-x-auto">

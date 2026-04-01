@@ -97,9 +97,13 @@ export default function YieldFactors() {
       </div>
 
       {yieldFactors.length === 0 ? (
-        <Card><CardContent className="py-12 text-center text-muted-foreground">
-          Nenhum fator cadastrado. Informe quanto cada alimento rende depois de preparado.
-        </CardContent></Card>
+        <EmptyState
+          icon={<Scale className="h-7 w-7" />}
+          title="Nenhum fator de rendimento"
+          description="Fatores de rendimento informam quanto cada alimento rende depois de cozido. Isso ajuda a calcular custos com mais precisão."
+          actionLabel={ingredients.length > 0 ? "Novo Fator" : undefined}
+          onAction={ingredients.length > 0 ? () => handleOpen() : undefined}
+        />
       ) : (
         <Card><CardContent className="p-0">
           <div className="overflow-x-auto">

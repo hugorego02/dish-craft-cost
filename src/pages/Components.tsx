@@ -153,9 +153,19 @@ export default function Components() {
       </div>
 
       {components.length === 0 ? (
-        <Card><CardContent className="py-12 text-center text-muted-foreground">
-          Nenhum componente criado. Cadastre componentes com base nos seus insumos.
-        </CardContent></Card>
+        <EmptyState
+          icon={<Layers className="h-7 w-7" />}
+          title="Nenhum componente criado"
+          description="Componentes são preparações feitas a partir dos insumos (ex: arroz cozido, frango grelhado). Cadastre seus insumos primeiro."
+          actionLabel={ingredients.length > 0 ? "Novo Componente" : undefined}
+          onAction={ingredients.length > 0 ? () => handleOpen() : undefined}
+          steps={[
+            { label: 'Insumos', done: ingredients.length > 0 },
+            { label: 'Componentes' },
+            { label: 'Tamanhos' },
+            { label: 'Pratos' },
+          ]}
+        />
       ) : (
         <Card><CardContent className="p-0">
           <div className="overflow-x-auto">
