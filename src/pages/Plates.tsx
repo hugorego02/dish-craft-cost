@@ -252,7 +252,37 @@ export default function Plates() {
                 <div><Label>Markup (ex: 2.5 = custo × 2.5)</Label><Input type="number" step="0.1" value={form.markupOrMargin || ''} onChange={e => setForm({ ...form, markupOrMargin: parseFloat(e.target.value) || 0 })} /></div>
               )}
               {form.pricingMethod === 'margin' && (
-                <div><Label>Margem desejada (%)</Label><Input type="number" step="1" value={form.markupOrMargin || ''} onChange={e => setForm({ ...form, markupOrMargin: parseFloat(e.target.value) || 0 })} /></div>
+                <div className="space-y-3">
+                  <div>
+                    <Label>Margem desejada (%)</Label>
+                    <Input type="number" step="1" min="0" max="99" value={form.markupOrMargin || ''} onChange={e => setForm({ ...form, markupOrMargin: parseFloat(e.target.value) || 0 })} />
+                  </div>
+                  {cost > 0 && (form.markupOrMargin || 0) > 0 && (
+                    <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 space-y-2">
+                      <p className="text-xs font-medium text-primary">Preço sugerido para {form.markupOrMargin}% de margem:</p>
+                      <p className="text-2xl font-bold text-primary">{fmt(price)}</p>
+                      <div className="flex items-center gap-2 pt-1">
+                        <Label className="text-xs whitespace-nowrap text-muted-foreground">Ajustar manualmente:</Label>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          className="h-8 text-sm"
+                          placeholder={price.toFixed(2)}
+                          value={form.manualPrice || ''}
+                          onChange={e => {
+                            const v = parseFloat(e.target.value);
+                            setForm({ ...form, manualPrice: v || undefined });
+                          }}
+                        />
+                      </div>
+                      {form.manualPrice && form.manualPrice !== price && (
+                        <p className="text-xs text-muted-foreground">
+                          Margem real com preço ajustado: <span className={`font-bold ${realMargin(form.manualPrice, cost) >= (form.markupOrMargin || 0) ? 'text-primary' : 'text-destructive'}`}>{realMargin(form.manualPrice, cost).toFixed(1)}%</span>
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
               )}
 
               <div className="bg-accent/50 rounded-lg p-4 space-y-2">
