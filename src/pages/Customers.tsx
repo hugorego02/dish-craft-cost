@@ -311,7 +311,17 @@ export default function Customers() {
                       <TableCell className="font-medium">
                         <div className="flex items-center gap-2">
                           {expandedId === c.id ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                          {c.name}
+                          <span>{c.name}</span>
+                          {c.dietaryRestrictions.length > 0 && (
+                            <div className="flex flex-wrap gap-1 ml-1">
+                              {c.dietaryRestrictions.slice(0, 3).map(r => (
+                                <Badge key={r} variant="destructive" className="text-[10px] px-1.5 py-0">{r}</Badge>
+                              ))}
+                              {c.dietaryRestrictions.length > 3 && (
+                                <Badge variant="outline" className="text-[10px] px-1.5 py-0">+{c.dietaryRestrictions.length - 3}</Badge>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </TableCell>
                       <TableCell className="hidden md:table-cell text-muted-foreground">{c.email || '—'}</TableCell>
