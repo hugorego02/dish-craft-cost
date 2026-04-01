@@ -88,12 +88,14 @@ export default function Plates() {
     return total;
   }, [form.components, form.extraCostIds, components, ctx, extraCosts]);
 
-  const price = useMemo(() => {
+  const suggestedPrice = useMemo(() => {
     if (form.pricingMethod === 'manual') return form.manualPrice || 0;
     if (form.pricingMethod === 'markup') return priceByMarkup(cost, form.markupOrMargin || 0);
     if (form.pricingMethod === 'margin') return priceByMargin(cost, form.markupOrMargin || 0);
     return 0;
   }, [form.pricingMethod, form.manualPrice, form.markupOrMargin, cost]);
+
+  const price = (form.pricingMethod === 'margin' && form.manualPrice) ? form.manualPrice : suggestedPrice;
 
   const profit = unitProfit(price, cost);
   const margin = realMargin(price, cost);
